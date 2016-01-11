@@ -1,6 +1,9 @@
 #ifndef _IMODEl_H_
 #define _IMODEL_H_
 
+#include <cstdio>
+#include <cstdlib>
+
 enum ModelType { Unsuperise, Supervise };
 
 /*
@@ -8,8 +11,8 @@ enum ModelType { Unsuperise, Supervise };
  */
 class IModel {
 	public :
-		IModel(ModelType t){}
-		virtual ~Imodel()
+		IModel(ModelType t);
+		virtual ~Imodel(){}
 		virtual void setLearningRate();
 		virtual void setBatchSize()
 	    virtual void trainBatch();
@@ -32,9 +35,9 @@ class IModel {
 };
 class SuperviseModel : public Imodel {
 	SuperviseModel();
-	virtual ~SuperviseModel();
+	virtual ~SuperviseModel(){}
 };
 class UnsuperviseModel : public Imodel {
 	UnsuperviseModel();
-	virtual ~UnsuperviseModel();
+	virtual ~UnsuperviseModel(){}
 };

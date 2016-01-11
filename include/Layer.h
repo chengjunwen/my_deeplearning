@@ -1,7 +1,9 @@
 #ifndef _LAYER_H_
 #define _LAYER_H_
 #include <cstring>
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 #include "Utility.h"
 
 class MLP;

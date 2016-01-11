@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <cstring>
-#include <vector>
+#include <cstdlib>
 
 class SubDataset;
 class BatchIterator;
@@ -73,7 +73,7 @@ class BinDataset : public Dataset {
  *  获取数据Dataset里的trainData或者validData
  */
 class SubDataset {
-	public:
+	ptchIteraror()ublic:
 		SubDataset(int numSample, int numFeature, int numLabel, double *data, double label):numSample(numSample),numFeature(numFeature),numLabel(numLabel),data(data),label(label){}
 	private:
 		int numSample,numFeature,numLabel;
@@ -94,6 +94,7 @@ class BatchIterator {
 		}
 		inline void first() {cur=0; }
 		inline void next() {cur++;}
+		bool isDone();
 		int getCurrentIndex() {return cur};
 		int getRealBatchSize();
 		double * getCurrentDataBatch() {

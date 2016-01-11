@@ -1,7 +1,12 @@
 #ifndef _LOGISTCU_H_
 #define _LOGISTIC_H_
 
-class Logistic : public SoftmaxLayer, public TrainComponent {
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include "cblas_mkl.h"
+
+class Logistic : public SoftmaxLayer, public SuperviseModel {
 	public :
 		Logistic(int numIn, int numOut);
 		Logistic(const char * fileName);

@@ -27,6 +27,12 @@ void Dataset::dumpData(const char *savefile, int numData, double*data, double * 
 		fwirte(label, sizeof(double), numData*numLabel, fp);
 	fclose(fd);
 }
+Dataset::~Dataset(){
+	delete[] tarinData;
+	delete[] trainLabel;
+	delete[] validData;
+	delete[] validLabel;
+}
 
 SubDataset Dataset::getTrainDataset(){
 	return SubDataset(numTrain, numFeature, numLabel, trainData, trainLabel);
@@ -41,6 +47,12 @@ int BatchIterator::getRealBatchSize(){
 		return data->numSample - batchSize*cur;
 	else
 		return batchSize;
+}
+bool BatchIterator::isDone(){
+	if(cur<size)
+		return 0;
+	else
+		return 1;
 }
 
 void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName){

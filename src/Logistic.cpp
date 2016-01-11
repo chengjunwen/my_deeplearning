@@ -13,12 +13,13 @@ void Logistic::runBatch(){
 	forward();
 }
 
-void Logistic::getTrainingCost(){
+double Logistic::getTrainingCost(){
 	double cost =0.0;
 	double *y = getOutput();
 	for(int i=0; i<batchSize*numOut; ++i){
 		cost += -1 * label[i] * log(1-y[i]);
 	}
+	return cost/batchSize;
 }
 
 void Logistic::computeDelta(Layer * prevLayer){
