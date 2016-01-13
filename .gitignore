@@ -3,4 +3,5 @@
 *.o
 *.data
 *.out
+.gitignore
 /result/*
