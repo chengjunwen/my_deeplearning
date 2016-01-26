@@ -1,10 +1,11 @@
 #include <iostream>
-#include "../include/Utility.h"
+#include "Utility.h"
 #include "Logistic.h"
 #include "TrainModel.h"
+#include "Dataset.h"
 
 void mnistTrain(){
-	MNISTDataset mnist();
+	MNISTDataset mnist;
 	mnist.loadData("train-images-idx3-ubyte","train-labels-idx1-ubyte");
 	Logistic log(mnist.getFeatureNumber(), mnist.getLabelNumber());
 	log.setModelFile("./result/mnistLogisticModel.dat");

@@ -7,7 +7,6 @@
 #include "Utility.h"
 
 class MLP;
-const int maxUnit=5000;
 typedef double LayerBuff[maxUnit * maxUnit];	//缓存，存储计算过程中的各种中间值
 /*
  *  基类Layer ，实现Layer的各种基本参数和方法
@@ -95,7 +94,7 @@ class TanhLayer : public Layer {
 		void activFunctionDerivate();
 		void initWeight();
 };
-class SofmaxLayer : public Layer {
+class SoftmaxLayer : public Layer {
 	public :
 		SoftmaxLayer(int numIn, int numOut);
 		SoftmaxLayer(FILE * modelFile);

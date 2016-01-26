@@ -22,13 +22,13 @@ void Dataset::dumpData(const char *savefile, int numData, double*data, double * 
 	fwrite(&numFeature, sizeof(int), 1, fp);
 	fwrite(&numLabel, sizeof(int), 1, fp);
 	if(data != NULL)
-		fwirte(data, sizeof(double), numData*numFeature, fp);
+		fwrite(data, sizeof(double), numData*numFeature, fp);
 	if(label != NULL)	
-		fwirte(label, sizeof(double), numData*numLabel, fp);
-	fclose(fd);
+		fwrite(label, sizeof(double), numData*numLabel, fp);
+	fclose(fp);
 }
 Dataset::~Dataset(){
-	delete[] tarinData;
+	delete[] trainData;
 	delete[] trainLabel;
 	delete[] validData;
 	delete[] validLabel;
@@ -64,19 +64,19 @@ void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName)
 		exit(1);
 	}
 	printf("load data ...\n");
-	fread(&magicNum, sizeof(int),1 dataFile);
+	fread(&magicNum, sizeof(int),1, dataFile);
 	magicNum = changeEndian(magicNum);
 	printf("magic number: %d\n", magicNum);
 	
-	fread(&numImage, sizeof(int),1 dataFile);
-	numImage = changeEndian(NumImage);
+	fread(&numImage, sizeof(int),1, dataFile);
+	numImage = changeEndian(numImage);
 	printf("number of image: %d\n", numImage);
 	
-	fread(&numRow, sizeof(int),1 dataFile);
+	fread(&numRow, sizeof(int),1, dataFile);
 	numRow = changeEndian(numRow);
 	printf("number of rows: %d\n", numRow);
 	
-	fread(&numCol, sizeof(int),1 dataFile);
+	fread(&numCol, sizeof(int),1, dataFile);
 	numCol = changeEndian(numCol);
 	printf("number of cols: %d\n", numCol);
 
@@ -88,37 +88,37 @@ void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName)
 
 	for(int i=0; i<numTrain; ++i){
 		for(int j=0; j<numFeature; ++j){
-			fread(&pixel, sizeof(uint8_t),1 dataFile);
+			fread(&pixel, sizeof(uint8_t),1 ,dataFile);
 			trainData[numFeature*i+j] = double(pixel)/255.0;
 		}
 	}
 	for(int i=0; i<numValid; ++i){
 		for(int j=0; j<numFeature; ++j){
-			fread(&pixel, sizeof(uint8_t),1 dataFile);
+			fread(&pixel, sizeof(uint8_t),1 ,dataFile);
 			validData[numFeature*i+j] = double(pixel)/255.0;
 		}
 	}
 
-	fclose(DataFile);
+	fclose(dataFile);
 
 	FILE* labelFile = fopen(LabelFileName, "rb");
 	if(labelFile == NULL){
 		printf("can not open file : %s\n", LabelFileName);
 		exit(1);
 	}
-	fread(&magicNum, sizeof(int),1 labelFile);
+	fread(&magicNum, sizeof(int),1 ,labelFile);
 	magicNum = changeEndian(magicNum);
 	printf("number of cols: %d\n", magicNum);
 	
-	fread(&numImage, sizeof(int),1 labelFile);
-	numImage = changeEndian(NumImage);
+	fread(&numImage, sizeof(int),1 ,labelFile);
+	numImage = changeEndian(numImage);
 	printf("number of image: %d\n", numImage);
 	
 	numLabel=10;
-	trainLabel = new[numTrain*numLabel];
-	validLabel = new[numValid*numLabel];
+	trainLabel = new double [numTrain*numLabel];
+	validLabel = new double [numValid*numLabel];
 	memset(trainLabel, 0, numTrain*numLabel*sizeof(double));
-	memset(ValidLabel, 0, numValid*numLabel*sizeof(double));
+	memset(validLabel, 0, numValid*numLabel*sizeof(double));
 	
 	for(int i=0; i<numTrain; ++i){
 		fread(&label, sizeof(uint8_t), 1, labelFile);
@@ -126,7 +126,7 @@ void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName)
 	}
 	for(int i=0; i<numValid; ++i){
 		fread(&label, sizeof(uint8_t), 1, labelFile);
-		ValidLabel[i*numLabel+label]=1.0;
+		validLabel[i*numLabel+label]=1.0;
 	}
 
 	fclose(labelFile);
@@ -184,7 +184,7 @@ void BinDataset::loadData(const char *DataFileName, const char *LabelFileName){
 		fread(&label, sizeof(uint8_t), 1, trainLabelFd);
 		validLabel[i*numLabel+label] = 1.0;
 	}
-	fclose(traingLabelFd);
+	fclose(trainLabelFd);
 	printf("loading ok...\n");
 }
 

@@ -3,7 +3,7 @@
 IModel::IModel(ModelType t):modelType(t){}
 
 void IModel::setModelFile(const char * fileName){
-	memcpy(modelFileName, fileName);
+	strcpy(modelFileName, fileName);
 }
 
 void IModel::saveModel(){

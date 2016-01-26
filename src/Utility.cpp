@@ -1,10 +1,10 @@
 #include "Utility.h"
 
 
-void sofamax(double *arr, int size){
+void softmax(double *arr, int size){
 	double sum=0;
 	for(int i=0; i<size; ++i){
-		sum += exp(arr[i])
+		sum += exp(arr[i]);
 	}
 	for(int i=0; i<size; ++i){
 		arr[i] = arr[i] / sum;
@@ -50,4 +50,16 @@ void initWeightTanh(double *weight, int numIn, int numOut){
 	for(int i=0; i<numIn * numOut; ++i){
 		weight[i] = random_double(low, high);
 	}
+}
+
+int changeEndian(int x){
+	int nbyte = sizeof(int);
+    char *p = (char*) &x;
+    char tmp;
+    for(int i = 0, j = nbyte - 1; i < j; i++, j--){
+        tmp = p[i]; p[i] = p[j]; p[j] = tmp;
+    }
+    return x;
+
+	
 }

@@ -4,13 +4,14 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 const double expThreshold = 45.0;
+const int maxUnit = 5000;
 
 void initWeightSigmoid(double *weight, int numIn, int numOut);
 void initWeightTanh(double *weight, int numIn, int numOut);
 void softmax(double *arr, int size);
 double sigmoidc(double x);
 double tanhc(double x);
-
+int changeEndian(int x);
 
 inline double sigmoid(double x){
 	return 1.0 / (1.0 + exp(-x));
@@ -31,8 +32,8 @@ inline double get_sigmoid_derivate(double y){
 inline double get_tanh_derivate(double y){
 	return (1.0 - y*y);
 }
-inline double get_relu_derivate(double x){
-	if(y==0);
+inline double get_relu_derivate(double y){
+	if(y==0)
 		return 0;
 	else
 		return 1;

@@ -1,10 +1,11 @@
-#ifndef _IMODEl_H_
+#ifndef _IMODEL_H_
 #define _IMODEL_H_
 
 #include <cstdio>
 #include <cstdlib>
+#include <string.h>
 
-enum ModelType { Unsuperise, Supervise };
+enum ModelType { Unsupervise, Supervise };
 
 /*
  * Model 定义，只用于接口调用，不会进行实例化
@@ -12,13 +13,13 @@ enum ModelType { Unsuperise, Supervise };
 class IModel {
 	public :
 		IModel(ModelType t);
-		virtual ~Imodel(){}
-		virtual void setLearningRate();
-		virtual void setBatchSize()
+		virtual ~IModel(){}
+		virtual void setLearningRate(double lr);
+		virtual void setBatchSize(int);
 	    virtual void trainBatch();
 		virtual void runBatch();
-		virtual void setInput();
-		virtual void setLabel();
+		virtual void setInput(double *);
+		virtual void setLabel(double *);
 		ModelType getTrainType(){ return modelType; }
 		virtual int getInputNumber();
 		virtual int getOutputNumber();
@@ -34,12 +35,14 @@ class IModel {
 		char modelFileName[20];
 		ModelType modelType;
 };
-class SuperviseModel : public Imodel {
-	SuperviseModel();
-	virtual ~SuperviseModel(){}
+class SuperviseModel : public IModel {
+	public:
+		SuperviseModel();
+		virtual ~SuperviseModel(){}
 };
-class UnsuperviseModel : public Imodel {
-	UnsuperviseModel();
-	virtual ~UnsuperviseModel(){}
+class UnsuperviseModel : public IModel {
+	public:
+		UnsuperviseModel();
+		virtual ~UnsuperviseModel(){}
 };
 #endif

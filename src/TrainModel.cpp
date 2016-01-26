@@ -1,17 +1,17 @@
 #include "TrainModel.h"
 
-TrainModel(Imodel &model):model(model){}
+TrainModel::TrainModel(IModel& model):model(model){}
 
 void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch){
 
 	SubDataset trainDataSet = dataSet->getTrainDataset();
 	SubDataset validDataSet = dataSet->getValidDataset();
-	int numBatch = (dataset->getTrainingNumber-1)/batchSize +1;
+	int numBatch = (dataSet->getTrainingNumber()-1)/miniBatch +1;
 	BatchIterator * dataIter;
 	dataIter = new BatchIterator(&trainDataSet, miniBatch);
 	model.setLearningRate(lr);	
 
-int patience = 10000;	//下列参数均用于计算early stop
+	int patience = 10000;	//下列参数均用于计算early stop
 	int patience_increase = 2;
 	double bestError = 100;
 	double improvement_threshold = 0.995;
@@ -21,41 +21,40 @@ int patience = 10000;	//下列参数均用于计算early stop
 		double cost =0;
 		time_t start, finish;
 		start= time(NULL);
-		for(dataIter->first(); !dataIter->isDone(); dataIter->next();){
+		for(dataIter->first(); !dataIter->isDone(); dataIter->next()){
 
 			model.setInput(dataIter->getCurrentDataBatch());
 			int theBatchSize = dataIter->getRealBatchSize();
 			model.setBatchSize(theBatchSize);
-			if(model.getTrainType() == Supersive){
+			if(model.getTrainType() == Supervise){
 				model.setLabel(dataIter->getCurrentLabelBatch());
 			}
 			model.trainBatch();	//训练
-			cost += model.getTrainCost();
-		
-			if(model.getTrainType() ==Supersive){	//有监督模型有提前推出机制
-				int iterCount = epoch * numBatch + dataIter->getCurrentIndex() + 1;
-				double error =getValidError(dataSet, miniBatch);
-				finish = time(NULL);
-				printf("trainingCost: %f\t, valid error: %f\t, time : %2.f\n", cost, error, difftime(finish, start));
-				if(error < bestError){
-					if(error < bestError*0.995){
-						patience = patience>iterCount*2 ? patience:ietrCount*2;
-						printf("patience update to: %d\t,need %d epochs\n", patience, patience/numBatch + 1);
-					}
-					betsError = error;
+			cost += model.getTrainingCost();
+		}	
+		if(model.getTrainType() ==Supervise){	//有监督模型有提前推出机制
+			int iterCount = epoch * numBatch + dataIter->getCurrentIndex() + 1;
+			double error =getErrorRate(dataSet, miniBatch, 0);
+			finish = time(NULL);
+			printf("trainingCost: %f\t, valid error: %f\t, time : %2.f\n", cost, error, difftime(finish, start));
+			if(error < bestError){
+			if(error < bestError*improvement_threshold){
+				patience = patience>iterCount*2 ? patience:iterCount*patience_increase;
+					printf("patience update to: %d\t,need %d epochs\n", patience, patience/numBatch + 1);
 				}
-				if(patience <= iterCount){
-					done_flag = true;
-					break;
-				}
+				bestError = error;
 			}
-			else{
-				double valdCost += getValidError(dataSet, miniBatch);
-				finish = time(NULL);
-				printf("trainingCost: %f\t, valid cost: %f\t, time : %2.f\n", cost/numBatch, validCost/numBatch, difftime(finish, start));
+			if(patience <= iterCount){
+				done_flag = true;
+				break;
 			}
-
 		}
+		else{
+			double validCost = getErrorRate(dataSet, miniBatch);
+			finish = time(NULL);
+			printf("trainingCost: %f\t, valid cost: %f\t, time : %2.f\n", cost/numBatch, validCost/numBatch, difftime(finish, start));
+		}
+
 	}
 	model.saveModel();
 	delete dataIter;
@@ -84,12 +83,12 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 		int theBatchSize = iter->getRealBatchSize();
 		model.setBatchSize(theBatchSize);
 		model.setInput(iter->getCurrentDataBatch());
-		if(model.getModelType() == Supersive){
+		if(model.getModelType() == Supervise){
 			model.setLabel(iter->getCurrentLabelBatch());
 		}
 		model.runBatch();
 
-		if(model.getTrainType() == Supersive){
+		if(model.getTrainType() == Supervise){
 			double * out = model.getOutput();
 			double *label = model.getLabel();
 			for(int i=0; i<theBatchSize; ++i){
@@ -104,7 +103,7 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 		}
 	}
 
-	if(model.getTrainType() == Supersive){
+	if(model.getTrainType() == Supervise){
 		return error/numSample;
 	}
 	else{

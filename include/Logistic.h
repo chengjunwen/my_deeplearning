@@ -1,4 +1,4 @@
-#ifndef _LOGISTCU_H_
+#ifndef _LOGISTIC_H_
 #define _LOGISTIC_H_
 
 #include <cstdio>
@@ -6,6 +6,8 @@
 #include <cmath>
 #include "mkl_cblas.h"
 #include "Utility.h"
+#include "Layer.h"
+#include "IModel.h"
 
 class Logistic : public SoftmaxLayer, public SuperviseModel {
 	public :

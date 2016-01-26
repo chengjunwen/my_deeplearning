@@ -1,20 +1,22 @@
 #ifndef _TRAINMODEL_H_
-#define _TRAINPMODEL_H_
+#define _TRAINMODEL_H_
 
 #include <cstdio>
 #include <cstdlib>
+#include <time.h>
 #include "IModel.h"
+#include "Dataset.h"
 /*
  * 抽象化训练过程， 传入所需训练的模型和训练数据即可
  */
 class TrainModel {
 	public :
-		TrainModel(IModel &model);
+		TrainModel(IModel& model);
 		void train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch);
-		void getErrorRate(Dataset * dataset, int miniBatch, bool f=0);
+		double getErrorRate(Dataset *, int , bool f=1);
 		~TrainModel(){}
-	provite:
-		IModel &model;
+	private:
+		IModel& model;
 
 };
 #endif

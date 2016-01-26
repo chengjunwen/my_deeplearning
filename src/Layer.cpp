@@ -1,13 +1,13 @@
 #include "mkl_cblas.h"
 #include "Layer.h"
 
-static Layerbuff temp1, temp2; 	//存储中间计算结果的临时存储
+static LayerBuff temp1; 	//存储中间计算结果的临时存储
 
 Layer::Layer(int numIn, int numOut, const char *Name):numIn(numIn),numOut(numOut){
 	init();
 	strcpy(layerName,Name);
 }
-Layer::Layer(FILE *modelFile, const char Name){
+Layer::Layer(FILE *modelFile, const char *Name){
 	init();
 	strcpy(layerName, Name);
 	loadModel(modelFile);
@@ -23,7 +23,7 @@ Layer::Layer(const char * fileName, const char *Name){
 	loadModel(fp);
 	fclose(fp);
 }
-Layer::Layer(int numIn, int numOut, double *w, double *b):numIn(numIn), numOut(nuOut){
+Layer::Layer(int numIn, int numOut, double *w, double *b, const char *Name):numIn(numIn), numOut(numOut){
 	init();
 	strcpy(layerName,Name);
 	memcpy(weight, w, numIn*numOut*sizeof(double));
@@ -31,7 +31,7 @@ Layer::Layer(int numIn, int numOut, double *w, double *b):numIn(numIn), numOut(n
 }
 void Layer::init(){
 	weight = new double[numIn*numOut];
-	bias= = new double[numOut];
+	bias = new double[numOut];
 	out = new double[batchSize*numOut];
 	delta = new double[batchSize*numOut];
 	bI = new double[batchSize];
@@ -51,7 +51,7 @@ void Layer::forward(){
 				batchSize, numOut, numIn, 1.0, 
 				in, numIn, weight, numOut, 
 				0, out, numOut);
-	cbals_dger(CblasRowMajor, batchSize, numOut, 
+	cblas_dger(CblasRowMajor, batchSize, numOut, 
 			   1.0, bI, 1, bias, 1, 
 			   out, numOut);
 	activFunction();
@@ -61,15 +61,15 @@ void Layer::backpropagate(Layer *prevLayer){
 	updateWeight();
 	updateBias();
 }
-void computeDelta(Layer * prevLayer){
+void Layer::computeDelta(Layer * prevLayer){
 	double * prevLayerWeight = prevLayer->getWeight();
 	double * prevLayerDelta = prevLayer->getDelta();
 	int prevLayerNumOut = prevLayer->getOutputNumber();
 
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
-				batchSize, numOut, prevLayernumOut, 1.0
-				prevLayerDelta, prevLayerNumOut, prevLayerWeight, prevLayerNumOut,
-				temp1, numOut);
+				batchSize, numOut, prevLayerNumOut, 1.0, 
+				prevLayerDelta, prevLayerNumOut, prevLayerWeight, prevLayerNumOut, 
+				0.0, temp1, numOut);
 
 	activFunctionDerivate();
 	for(int i=0; i<batchSize*numOut; ++i){
@@ -77,27 +77,27 @@ void computeDelta(Layer * prevLayer){
 	}
 	
 }
-void updateWeight(){
+void Layer::updateWeight(){
 	
-	cblas_dgemm(CblasRowMajor, CblasTrans, cblasNoTrans, 
-				numIn, numOut, batchSize, -1.0*learningRate/static_cast<double>batchSize,
+	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, 
+				numIn, numOut, batchSize, -1.0*learningRate/static_cast<double>(batchSize),
 				in, numIn, delta, numOut, 
 				1.0, weight, numOut);
 }
-void updateBias(){
+void Layer::updateBias(){
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 
-				1, numOut, batchSize, -1.0*learningRate/static_cast<double>batchSize,
+				1, numOut, batchSize, -1.0*learningRate/static_cast<double>(batchSize),
 				bI, batchSize, delta, numOut,
 				1.0, bias, numOut);
 }
 
-void saveModel(FILE *modelFile){
+void Layer::saveModel(FILE *modelFile){
 	fwrite(&numIn, sizeof(int), 1, modelFile);
 	fwrite(&numOut, sizeof(int), 1, modelFile);
 	fwrite(weight, sizeof(double), numIn*numOut, modelFile);
 	fwrite(bias, sizeof(double), numOut, modelFile);
 }
-void loadModel(FILE *modelFile){
+void Layer::loadModel(FILE *modelFile){
 	fread(&numIn, sizeof(int), 1, modelFile);
 	fread(&numOut, sizeof(int), 1, modelFile);
 	fread(weight, sizeof(double), numIn*numOut, modelFile);
@@ -121,15 +121,15 @@ SigmoidLayer::SigmoidLayer(int numIn, int numOut, double *w, double *b):
 	initWeight();
 	Layer::initBias();
 }
-SigmoidLayer::initWeight(){
+void SigmoidLayer::initWeight(){
 	initWeightSigmoid(weight, numIn, numOut);
 }
-SigmoidLayer::activFunction(){
-	for(int i=0; i<batchSize*numOut, ++i){
+void SigmoidLayer::activFunction(){
+	for(int i=0; i<batchSize*numOut; ++i){
 		out[i] = sigmoid(out[i]);
 	}
 }
-SigmoidLayer::activFunctionDerivate(){
+void SigmoidLayer::activFunctionDerivate(){
 	for(int i=0; i<batchSize*numOut; ++i){
 		delta[i] = get_sigmoid_derivate(out[i]);
 	}
@@ -151,15 +151,15 @@ ReLULayer::ReLULayer(int numIn, int numOut, double *w, double *b):
 	initWeight();
 	Layer::initBias();
 }
-ReLULayer::initWeight(){
+void ReLULayer::initWeight(){
 	initWeightSigmoid(weight, numIn, numOut);
 }
-ReLULayer::activFunction(){
+void ReLULayer::activFunction(){
 	for(int i=0; i<batchSize*numOut; ++i){
 		out[i] = relu(out[i]);
 	}
 }
-ReLULayer::activFunctionDerivate(){
+void ReLULayer::activFunctionDerivate(){
 	for(int i=0; i<batchSize*numOut; ++i){
 		delta[i] = get_sigmoid_derivate(out[i]);
 	}
@@ -181,15 +181,15 @@ TanhLayer::TanhLayer(int numIn, int numOut, double *w, double *b):
 	initWeight();
 	Layer::initBias();
 }
-TanhLayer::initWeight(){
+void TanhLayer::initWeight(){
 	initWeightTanh(weight, numIn, numOut);
 }
-TanhLayer::activFunction(){
+void TanhLayer::activFunction(){
 	for(int i=0; i<batchSize*numOut; ++i){
 		out[i] = tanh(out[i]);
 	}
 }
-TanhLayer::activFunctionDerivate(){
+void TanhLayer::activFunctionDerivate(){
 	for(int i=0; i<batchSize*numOut; ++i){
 		delta[i] = get_tanh_derivate(out[i]);
 	}
@@ -203,7 +203,7 @@ SoftmaxLayer::SoftmaxLayer(int numIn, int numOut):Layer(numIn, numOut, "softmax"
 	Layer::initBias();
 }
 SoftmaxLayer::SoftmaxLayer(const char * fileName):Layer(fileName, "softmax"){
-	initweight();
+	initWeight();
 	Layer::initBias();
 }
 SoftmaxLayer::SoftmaxLayer(FILE *modelFile):Layer(modelFile, "softmax"){
@@ -215,10 +215,10 @@ SoftmaxLayer::SoftmaxLayer(int numIn, int numOut, double *w, double *b):
 	initWeight();
 	Layer::initBias();
 }
-SoftmaxLayer::initWeight(){
+void SoftmaxLayer::initWeight(){
 	initWeightSigmoid(weight, numIn, numOut);
 }
-SoftmaxLayer::activFunction(){
+void SoftmaxLayer::activFunction(){
 	for(int i=0; i<batchSize; i++){
 		softmax(out + i*numOut, numOut);
 	}

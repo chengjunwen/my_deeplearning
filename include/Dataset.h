@@ -5,12 +5,13 @@
 #include <stdint.h>
 #include <cstring>
 #include <cstdlib>
+#include "Utility.h"
 
 class SubDataset;
 class BatchIterator;
 
 class Dataset {
-	publict:
+	public:
 		Dataset();
 		inline double * getTrainingDataBatch(int offset){
 			return trainData + offset*numFeature;
@@ -37,14 +38,14 @@ class Dataset {
 			return numLabel;
 		}
 		virtual ~Dataset();
-		virtual loadDataset(const char *, const char *);
+		virtual void loadDataset(const char *, const char *);
 		void dumpTrainingData(const char * savefile);
 		SubDataset getTrainDataset();
 		SubDataset getValidDataset();
 	protected:
 		void dumpData(const char* savefile, int numData, double*data, double *label);
 		int numTrain, numValid, numFeature, numLabel;
-		double *tainData;
+		double *trainData;
 		double *trainLabel;
 		double *validData;
 		double *validLabel;
@@ -53,19 +54,19 @@ class Dataset {
 class MNISTDataset : public Dataset {
 	public:
 		MNISTDataset(){}
-		loadData(const char* DataFileName, const char * LabelFileName);
+		void loadData(const char* DataFileName, const char * LabelFileName);
 		~MNISTDataset(){}
 };
 class SVMDataset : public Dataset {
 	public:
 		SVMDataset(){}
-		loadData(const char* trainDataFileName, const char * validDataFileName);
+		void loadData(const char* trainDataFileName, const char * validDataFileName);
 		~SVMDataset(){}
 };
 class BinDataset : public Dataset {
 	public:
 		BinDataset(){}
-		loadData(const char* DataFileName, const char * LabelFileName);
+		void loadData(const char* DataFileName, const char * LabelFileName);
 		~BinDataset(){}
 };
 
@@ -73,15 +74,16 @@ class BinDataset : public Dataset {
  *  获取数据Dataset里的trainData或者validData
  */
 class SubDataset {
-	ptchIteraror()ublic:
-		SubDataset(int numSample, int numFeature, int numLabel, double *data, double label):numSample(numSample),numFeature(numFeature),numLabel(numLabel),data(data),label(label){}
+	public:
+			
+		SubDataset(int numSample, int numFeature, int numLabel, double *data, double *label):numSample(numSample),numFeature(numFeature),numLabel(numLabel),data(data),label(label){}
+		~SubDataset(){}
 	private:
 		int numSample,numFeature,numLabel;
 		double *data;
 		double *label;
-		~SubDataset(){}
 
-		friend class BarchIterator;
+		friend class BatchIterator;
 };
 
 /*
@@ -95,13 +97,13 @@ class BatchIterator {
 		inline void first() {cur=0; }
 		inline void next() {cur++;}
 		bool isDone();
-		int getCurrentIndex() {return cur};
+		int getCurrentIndex() {return cur;}
 		int getRealBatchSize();
 		double * getCurrentDataBatch() {
-			return data->data + data->numFeature * cur * batchsize;
+			return data->data + data->numFeature * cur * batchSize;
 		}
 		double * getCurrentLabelBatch() {
-			return data->label + data->numLabel * cur * batchsize;
+			return data->label + data->numLabel * cur * batchSize;
 		}
 	private:
 		SubDataset * data;
