@@ -44,3 +44,4 @@ inline int random_int(int low, int high){
 inline int random_double(int low, int high){
 	return (rand() % RAND_MAX) *(high - low) + low;
 }
+#endif

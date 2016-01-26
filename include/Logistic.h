@@ -4,7 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
-#include "cblas_mkl.h"
+#include "mkl_cblas.h"
+#include "Utility.h"
 
 class Logistic : public SoftmaxLayer, public SuperviseModel {
 	public :
@@ -21,9 +22,11 @@ class Logistic : public SoftmaxLayer, public SuperviseModel {
 		int getInputNumber(){ return Layer::getInputNumber(); }
 		int getOutputNumber(){ return Layer::getOutputNumber(); }
 		double * getOutput(){ return Layer::getOutput(); }
+		double * getLabel(){ return label;}
 		double getTrainingCost();
 		void saveModel(FILE *fp);
 	private :
 		double *label;
 		void computeDelta(Layer * prevLayer); //覆盖softmax的computeDelta函数 
 };
+#endif

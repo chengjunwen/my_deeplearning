@@ -19,12 +19,13 @@ class IModel {
 		virtual void runBatch();
 		virtual void setInput();
 		virtual void setLabel();
-
+		ModelType getTrainType(){ return modelType; }
 		virtual int getInputNumber();
 		virtual int getOutputNumber();
 		virtual double * getOutput();
+		virtual double * getLabel();
 		virtual double getTrainingCost();
-		
+			
 		void setModelFile(const char * fileName);
 		void saveModel();//用于外部调用该方法来存储模型，内部调用下面的存储函数
 		virtual void saveModel(FILE *modelFile);//用于子类实现并调用子类的方法
@@ -41,3 +42,4 @@ class UnsuperviseModel : public Imodel {
 	UnsuperviseModel();
 	virtual ~UnsuperviseModel(){}
 };
+#endif

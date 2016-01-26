@@ -106,3 +106,4 @@ class SofmaxLayer : public Layer {
 		void activFunctionDerivate(){}
 		void initWeight();
 };
+#endif

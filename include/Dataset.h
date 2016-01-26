@@ -109,3 +109,4 @@ class BatchIterator {
 		int cur;
 		
 };
+#endif
