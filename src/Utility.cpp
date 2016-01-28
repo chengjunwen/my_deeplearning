@@ -7,7 +7,7 @@ void softmax(double *arr, int size){
 		sum += exp(arr[i]);
 	}
 	for(int i=0; i<size; ++i){
-		arr[i] = arr[i] / sum;
+		arr[i] = exp(arr[i]) / sum;
 	}
 }
 
@@ -62,4 +62,13 @@ int changeEndian(int x){
     return x;
 
 	
+}
+
+int maxElemIndex(double *arr, int size){
+	int maxIndex = 0;
+	for(int i=1; i<size; ++i){
+		if(arr[i] > arr[maxIndex])
+			maxIndex=i;
+	}
+	return maxIndex;
 }

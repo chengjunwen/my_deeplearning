@@ -9,7 +9,7 @@
 #include "Layer.h"
 #include "IModel.h"
 
-class Logistic : public SoftmaxLayer, public SuperviseModel {
+class Logistic : public SoftmaxLayer, public IModel {
 	public :
 		Logistic(int numIn, int numOut);
 		Logistic(const char * fileName);

@@ -1,15 +1,15 @@
 #include "TrainModel.h"
 
-TrainModel::TrainModel(IModel& model):model(model){}
+TrainModel::TrainModel(IModel * model):model(model){}
 
 void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch){
 
 	SubDataset trainDataSet = dataSet->getTrainDataset();
 	SubDataset validDataSet = dataSet->getValidDataset();
-	int numBatch = (dataSet->getTrainingNumber()-1)/miniBatch +1;
+	int numBatch = (dataSet->getTrainNumber()-1)/miniBatch +1;
 	BatchIterator * dataIter;
 	dataIter = new BatchIterator(&trainDataSet, miniBatch);
-	model.setLearningRate(lr);	
+	model->setLearningRate(lr);	
 
 	int patience = 10000;	//下列参数均用于计算early stop
 	int patience_increase = 2;
@@ -23,20 +23,20 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 		start= time(NULL);
 		for(dataIter->first(); !dataIter->isDone(); dataIter->next()){
 
-			model.setInput(dataIter->getCurrentDataBatch());
+			model->setInput(dataIter->getCurrentDataBatch());
 			int theBatchSize = dataIter->getRealBatchSize();
-			model.setBatchSize(theBatchSize);
-			if(model.getTrainType() == Supervise){
-				model.setLabel(dataIter->getCurrentLabelBatch());
+			model->setBatchSize(theBatchSize);
+			if(model->getModelType() == Supervise){
+				model->setLabel(dataIter->getCurrentLabelBatch());
 			}
-			model.trainBatch();	//训练
-			cost += model.getTrainingCost();
+			model->trainBatch();	//训练
+			cost += model->getTrainingCost();
 		}	
-		if(model.getTrainType() ==Supervise){	//有监督模型有提前推出机制
+		if(model->getModelType() ==Supervise){	//有监督模型有提前推出机制
 			int iterCount = epoch * numBatch + dataIter->getCurrentIndex() + 1;
-			double error =getErrorRate(dataSet, miniBatch, 0);
+			double error =getErrorRate(dataSet, miniBatch, 1);
 			finish = time(NULL);
-			printf("trainingCost: %f\t, valid error: %f\t, time : %2.f\n", cost, error, difftime(finish, start));
+			printf("trainingCost: %f\t, valid error: %f\t, time : %2.f\n", cost/numBatch, error, difftime(finish, start));
 			if(error < bestError){
 			if(error < bestError*improvement_threshold){
 				patience = patience>iterCount*2 ? patience:iterCount*patience_increase;
@@ -56,7 +56,7 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 		}
 
 	}
-	model.saveModel();
+	model->saveModel();
 	delete dataIter;
 }
 
@@ -67,30 +67,31 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 	int numLabel = dataset->getLabelNumber();
 	double error =0;
 	double cost = 0;
+	double xx;
 	if(f){	//取valid dataset
 		data = dataset->getValidDataset();
 		numBatch = (dataset->getValidNumber()-1)/miniBatch + 1;
-		numSample = dataset->getTariningNumber();
+		numSample = dataset->getValidNumber();
 	}
 	else{	//取train dataset
 		data = dataset->getTrainDataset();
 		numBatch = (dataset->getTrainNumber()-1)/miniBatch + 1;
-		numSample = dataset->getValidateNumber();
+		numSample = dataset->getTrainNumber();
 	}
 	BatchIterator * iter = new BatchIterator(&data, miniBatch);
 	
 	for(iter->first(); !iter->isDone(); iter->next()){
 		int theBatchSize = iter->getRealBatchSize();
-		model.setBatchSize(theBatchSize);
-		model.setInput(iter->getCurrentDataBatch());
-		if(model.getModelType() == Supervise){
-			model.setLabel(iter->getCurrentLabelBatch());
+		model->setBatchSize(theBatchSize);
+		model->setInput(iter->getCurrentDataBatch());
+		if(model->getModelType() == Supervise){
+			model->setLabel(iter->getCurrentLabelBatch());
 		}
-		model.runBatch();
+		model->runBatch();
 
-		if(model.getTrainType() == Supervise){
-			double * out = model.getOutput();
-			double *label = model.getLabel();
+		if(model->getModelType() == Supervise){
+			double * out = model->getOutput();
+			double *label = model->getLabel();
 			for(int i=0; i<theBatchSize; ++i){
 				int maxIndex = maxElemIndex(out + i*numLabel, numLabel);
 				if(label[i*numLabel + maxIndex] != 1.0){
@@ -99,16 +100,16 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 			}
 		}
 		else{
-			cost += model.getTarinCost();
+			cost += model->getTrainingCost();
 		}
 	}
 
-	if(model.getTrainType() == Supervise){
-		return error/numSample;
+	if(model->getModelType() == Supervise){
+		xx = error/numSample;
 	}
 	else{
-		return cost/numBatch;
+		xx = cost/numBatch;
 	}
 	delete iter;
-
+	return xx;
 }

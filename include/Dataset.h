@@ -13,22 +13,22 @@ class BatchIterator;
 class Dataset {
 	public:
 		Dataset();
-		inline double * getTrainingDataBatch(int offset){
+		inline double * getTrainDataBatch(int offset){
 			return trainData + offset*numFeature;
 		}
-		inline double * getTrainingLabelBatch(int offset){
+		inline double * getTrainLabelBatch(int offset){
 			return trainLabel + offset*numLabel;
 		}
-		inline double * getValidateDataBatch(int offset){
+		inline double * getValidDataBatch(int offset){
 			return validData + offset*numFeature;
 		}
-		inline double * getValidateLabelBatch(int offset){
+		inline double * getValidLabelBatch(int offset){
 			return validLabel + offset*numLabel;
 		}
-		inline int getTrainingNumber(){
+		inline int getTrainNumber(){
 			return numTrain;
 		}
-		inline int getValidateNumber(){
+		inline int getValidNumber(){
 			return numValid;
 		}
 		inline int getFeatureNumber(){
@@ -38,8 +38,8 @@ class Dataset {
 			return numLabel;
 		}
 		virtual ~Dataset();
-		virtual void loadDataset(const char *, const char *);
-		void dumpTrainingData(const char * savefile);
+		virtual void loadDataset(const char *, const char *){}
+		void dumpTrainData(const char * savefile);
 		SubDataset getTrainDataset();
 		SubDataset getValidDataset();
 	protected:
@@ -75,7 +75,7 @@ class BinDataset : public Dataset {
  */
 class SubDataset {
 	public:
-			
+		SubDataset(){};	
 		SubDataset(int numSample, int numFeature, int numLabel, double *data, double *label):numSample(numSample),numFeature(numFeature),numLabel(numLabel),data(data),label(label){}
 		~SubDataset(){}
 	private:

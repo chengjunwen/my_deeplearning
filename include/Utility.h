@@ -12,6 +12,7 @@ void softmax(double *arr, int size);
 double sigmoidc(double x);
 double tanhc(double x);
 int changeEndian(int x);
+int maxElemIndex(double * arr, int size);
 
 inline double sigmoid(double x){
 	return 1.0 / (1.0 + exp(-x));

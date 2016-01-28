@@ -11,12 +11,12 @@
  */
 class TrainModel {
 	public :
-		TrainModel(IModel& model);
+		TrainModel(IModel * model);
 		void train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch);
 		double getErrorRate(Dataset *, int , bool f=1);
 		~TrainModel(){}
 	private:
-		IModel& model;
+		IModel* model;
 
 };
 #endif

@@ -32,10 +32,13 @@ Layer::Layer(int numIn, int numOut, double *w, double *b, const char *Name):numI
 void Layer::init(){
 	weight = new double[numIn*numOut];
 	bias = new double[numOut];
-	out = new double[batchSize*numOut];
-	delta = new double[batchSize*numOut];
-	bI = new double[batchSize];
-	for(int i=0; i<batchSize; ++i){
+	out =NULL;
+	delta = NULL;
+//	bI = NULL;
+//	out = new double[batchSize*numOut];
+//	delta = new double[batchSize*numOut];
+	bI = new double[maxUnit];
+	for(int i=0; i<maxUnit; ++i){
 		bI[i] = 1.0;	
 	}
 }
@@ -47,6 +50,9 @@ Layer::~Layer(){
 	delete[] bI;
 }
 void Layer::forward(){
+	if(out == NULL){
+		out = new double[batchSize*numOut];
+	}
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, 
 				batchSize, numOut, numIn, 1.0, 
 				in, numIn, weight, numOut, 
@@ -57,6 +63,9 @@ void Layer::forward(){
 	activFunction();
 }
 void Layer::backpropagate(Layer *prevLayer){
+	if(delta ==NULL){
+		delta = new double[batchSize*numOut];
+	}
 	computeDelta(prevLayer);
 	updateWeight();
 	updateBias();
@@ -216,7 +225,7 @@ SoftmaxLayer::SoftmaxLayer(int numIn, int numOut, double *w, double *b):
 	Layer::initBias();
 }
 void SoftmaxLayer::initWeight(){
-	initWeightSigmoid(weight, numIn, numOut);
+	memset(weight, 0, numIn*numOut*sizeof(double));
 }
 void SoftmaxLayer::activFunction(){
 	for(int i=0; i<batchSize; i++){

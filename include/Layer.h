@@ -45,10 +45,10 @@ class Layer {
 
 		void updateWeight();
 		void updateBias();
-		void computeDelta(Layer * prevLayer);
+		virtual void computeDelta(Layer * prevLayer);
 		
-		virtual void activFunction();
-		virtual void activFunctionDerivate();
+		virtual void activFunction()=0;
+		virtual void activFunctionDerivate()=0;
 
 		void init();
 		void loadModel(const char *fileName);

@@ -25,3 +25,6 @@ $(MODELS): % : src/%.o $(OBJECTS)
 	$(CPP) $^ $(LDFLAGS) -o $@
 $(OBJECTS): %.o : %.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
+clean:
+	rm -rf $(MODELS) $(OBJECTS) *.out *.png *.txt src/*.o
+	find . -name "*swp" | xargs rm -rf

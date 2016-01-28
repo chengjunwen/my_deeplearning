@@ -8,12 +8,12 @@ Dataset::Dataset(){
 	trainData=validData=trainLabel=validLabel=NULL;
 }
 
-void Dataset::dumpTrainingData(const char * savefile){
+void Dataset::dumpTrainData(const char * savefile){
 	dumpData(savefile, numTrain, trainData, trainLabel);
 }
 
 void Dataset::dumpData(const char *savefile, int numData, double*data, double * label){
-	FILE *fp=fopen(savefile,"wb");
+	FILE *fp=fopen(savefile,"wb+");
 	if(fp == NULL){
 		printf("file can not open: %s\n", savefile);
 		exit(1);
@@ -81,8 +81,8 @@ void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName)
 	printf("number of cols: %d\n", numCol);
 
 	numFeature = numRow*numCol;
-	numTrain = numImage/6;
-	numValid = numImage - numTrain;
+	numValid = numImage/6;
+	numTrain = numImage - numValid;
 	trainData = new double[numTrain*numFeature];
 	validData = new double[numValid*numFeature];
 
