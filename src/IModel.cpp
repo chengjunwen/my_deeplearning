@@ -2,13 +2,11 @@
 
 IModel::IModel(ModelType t):modelType(t){}
 IModel::~IModel(){
-	delete[] modelFileName;
+//		delete[] modelFileName;
 }
 
 void IModel::setModelFile(const char * fileName){
-//	if(modelFileName!=NULL){
-//		delete[] modelFileName; 
-//	}
+	delete[] modelFileName; 
 	modelFileName = new char[strlen(fileName)+1];
 	strcpy(modelFileName, fileName);
 }

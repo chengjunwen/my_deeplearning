@@ -11,7 +11,7 @@ void mnistTrain(){
 	Logistic log(mnist.getFeatureNumber(), mnist.getLabelNumber());
 	log.setModelFile("./result/mnistLogisticModel.dat");
 	TrainModel trainmodel(&log);
-	trainmodel.train(&mnist, 0.01, 100, 1000);
+	trainmodel.train(&mnist, 0.01, 10, 1000);
 }
 
 int main(){

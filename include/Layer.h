@@ -38,7 +38,7 @@ class Layer {
 		void initWeight(){}	//为了能在构造器中调用该函数，不能使用虚函数
 		void initBias(){ memset(bias, 0, numOut*sizeof(double)); } 
 
-//		virtual void setLabel(double *label);	//不一定会用到
+		virtual void setLabel(double *label){}	//不一定会用到
 		virtual ~Layer();	//虚析构函数，便于基类指针指向子类时执行子类析构函数
 
 	protected :

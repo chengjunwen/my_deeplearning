@@ -14,10 +14,10 @@ LDFLAGS=-lm -pg -lgfortran
 LDFLAGS:=$(LDFLAGS) $(MKLLDFLAGS_64) #指定库文件的位置
 
 
-OBJECTS= Dataset.o Layer.o Logistic.o Utility.o IModel.o TrainModel.o
+OBJECTS= Dataset.o Layer.o Logistic.o Utility.o IModel.o TrainModel.o MLP.o
 OBJECTS:=$(patsubst %.o, src/%.o,$(OBJECTS))
 
-MODELS=LogisticModel
+MODELS=LogisticModel MLPModel
 
 test:
 	@echo $(CFLAGS)

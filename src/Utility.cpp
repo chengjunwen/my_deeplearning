@@ -36,7 +36,7 @@ double tanhc(double x){
 
 void initWeightSigmoid(double *weight, int numIn, int numOut){
 	double low,high;
-	high = 4 * sqrt(6 / (numIn + numOut));
+	high = 4 * sqrt(6. / (numIn + numOut));
 	low = -1 * high;
 	for(int i=0; i<numIn * numOut; ++i){
 		weight[i] = random_double(low, high);
@@ -45,7 +45,7 @@ void initWeightSigmoid(double *weight, int numIn, int numOut){
 
 void initWeightTanh(double *weight, int numIn, int numOut){
 	double low,high;
-	high = sqrt(6 / (numIn + numOut));
+	high = sqrt(6. / (numIn + numOut));
 	low = -1 * high;
 	for(int i=0; i<numIn * numOut; ++i){
 		weight[i] = random_double(low, high);

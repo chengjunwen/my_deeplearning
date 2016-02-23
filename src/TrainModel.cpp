@@ -36,11 +36,11 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 			int iterCount = epoch * numBatch + dataIter->getCurrentIndex() + 1;
 			double error =getErrorRate(dataSet, miniBatch, 1);
 			finish = time(NULL);
-			printf("trainingCost: %f\t, valid error: %f\t, time : %2.f\n", cost/numBatch, error, difftime(finish, start));
+			printf("epoch: %d trainingCost: %f valid error: %.4lf%% time : %.2f\n", epoch, cost/numBatch, error*100, difftime(finish, start));
 			if(error < bestError){
 			if(error < bestError*improvement_threshold){
 				patience = patience>iterCount*2 ? patience:iterCount*patience_increase;
-					printf("patience update to: %d\t,need %d epochs\n", patience, patience/numBatch + 1);
+					printf("patience update to: %d,need %d epochs\n", patience, patience/numBatch + 1);
 				}
 				bestError = error;
 			}
@@ -52,7 +52,7 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 		else{
 			double validCost = getErrorRate(dataSet, miniBatch);
 			finish = time(NULL);
-			printf("trainingCost: %f\t, valid cost: %f\t, time : %2.f\n", cost/numBatch, validCost/numBatch, difftime(finish, start));
+			printf("epoch: %d trainingCost: %f valid cost: %f time : %2.f\n", epoch, cost/numBatch, validCost/numBatch, difftime(finish, start));
 		}
 
 	}

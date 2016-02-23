@@ -43,7 +43,7 @@ inline double get_relu_derivate(double y){
 inline int random_int(int low, int high){
 	return rand() % (high -low + 1) + low;
 }
-inline int random_double(int low, int high){
-	return (rand() % RAND_MAX) *(high - low) + low;
+inline double random_double(double low, double high){
+	return ((double)rand() / RAND_MAX) *(high - low) + low;
 }
 #endif

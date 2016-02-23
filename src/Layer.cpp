@@ -44,10 +44,15 @@ void Layer::init(){
 }
 Layer::~Layer(){
 	delete[] weight;
+	printf("w\n");
 	delete[] bias;
+	printf("b\n");
 	delete[] out;
+	printf("out\n");
 	delete[] delta;
+	printf("delta\n");
 	delete[] bI;
+	printf("bi\n");
 }
 void Layer::forward(){
 	if(out == NULL){
@@ -121,15 +126,9 @@ SigmoidLayer::SigmoidLayer(int numIn, int numOut):Layer(numIn, numOut, "sigmoid"
 	initWeight();
 	Layer::initBias();
 }
-SigmoidLayer::SigmoidLayer(FILE *modelFile):Layer(modelFile, "sigmoid"){
-	initWeight();
-	Layer::initBias();
-}
+SigmoidLayer::SigmoidLayer(FILE *modelFile):Layer(modelFile, "sigmoid"){}
 SigmoidLayer::SigmoidLayer(int numIn, int numOut, double *w, double *b):
-					 Layer(numIn, numOut, w, b, "sigmoid"){
-	initWeight();
-	Layer::initBias();
-}
+					 Layer(numIn, numOut, w, b, "sigmoid"){}
 void SigmoidLayer::initWeight(){
 	initWeightSigmoid(weight, numIn, numOut);
 }
@@ -151,15 +150,9 @@ ReLULayer::ReLULayer(int numIn, int numOut):Layer(numIn, numOut, "relu"){
 	initWeight();
 	Layer::initBias();
 }
-ReLULayer::ReLULayer(FILE *modelFile):Layer(modelFile, "relu"){
-	initWeight();
-	Layer::initBias();
-}
+ReLULayer::ReLULayer(FILE *modelFile):Layer(modelFile, "relu"){}
 ReLULayer::ReLULayer(int numIn, int numOut, double *w, double *b):
-					 Layer(numIn, numOut, w, b, "relu"){
-	initWeight();
-	Layer::initBias();
-}
+					 Layer(numIn, numOut, w, b, "relu"){}
 void ReLULayer::initWeight(){
 	initWeightSigmoid(weight, numIn, numOut);
 }
@@ -181,15 +174,9 @@ TanhLayer::TanhLayer(int numIn, int numOut):Layer(numIn, numOut, "tanh"){
 	initWeight();
 	Layer::initBias();
 }
-TanhLayer::TanhLayer(FILE *modelFile):Layer(modelFile, "tanh"){
-	initWeight();
-	Layer::initBias();
-}
+TanhLayer::TanhLayer(FILE *modelFile):Layer(modelFile, "tanh"){}
 TanhLayer::TanhLayer(int numIn, int numOut, double *w, double *b):
-					 Layer(numIn, numOut, w, b, "tanh"){
-	initWeight();
-	Layer::initBias();
-}
+					 Layer(numIn, numOut, w, b, "tanh"){}
 void TanhLayer::initWeight(){
 	initWeightTanh(weight, numIn, numOut);
 }
@@ -211,19 +198,10 @@ SoftmaxLayer::SoftmaxLayer(int numIn, int numOut):Layer(numIn, numOut, "softmax"
 	initWeight();
 	Layer::initBias();
 }
-SoftmaxLayer::SoftmaxLayer(const char * fileName):Layer(fileName, "softmax"){
-	initWeight();
-	Layer::initBias();
-}
-SoftmaxLayer::SoftmaxLayer(FILE *modelFile):Layer(modelFile, "softmax"){
-	initWeight();
-	Layer::initBias();
-}
+SoftmaxLayer::SoftmaxLayer(const char * fileName):Layer(fileName, "softmax"){}
+SoftmaxLayer::SoftmaxLayer(FILE *modelFile):Layer(modelFile, "softmax"){}
 SoftmaxLayer::SoftmaxLayer(int numIn, int numOut, double *w, double *b):
-					 Layer(numIn, numOut, w, b, "softmax"){
-	initWeight();
-	Layer::initBias();
-}
+					 Layer(numIn, numOut, w, b, "softmax"){}
 void SoftmaxLayer::initWeight(){
 	memset(weight, 0, numIn*numOut*sizeof(double));
 }
