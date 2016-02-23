@@ -35,8 +35,6 @@ void Layer::init(){
 	out =NULL;
 	delta = NULL;
 //	bI = NULL;
-//	out = new double[batchSize*numOut];
-//	delta = new double[batchSize*numOut];
 	bI = new double[maxUnit];
 	for(int i=0; i<maxUnit; ++i){
 		bI[i] = 1.0;	
@@ -44,16 +42,15 @@ void Layer::init(){
 }
 Layer::~Layer(){
 	delete[] weight;
-	printf("w\n");
 	delete[] bias;
-	printf("b\n");
 	delete[] out;
-	printf("out\n");
 	delete[] delta;
-	printf("delta\n");
 	delete[] bI;
-	printf("bi\n");
 }
+
+/*
+ *  forward and backpropagate
+ */
 void Layer::forward(){
 	if(out == NULL){
 		out = new double[batchSize*numOut];
@@ -75,6 +72,8 @@ void Layer::backpropagate(Layer *prevLayer){
 	updateWeight();
 	updateBias();
 }
+
+// comoute delta,  delta = (prevW*prevDelta) * f'
 void Layer::computeDelta(Layer * prevLayer){
 	double * prevLayerWeight = prevLayer->getWeight();
 	double * prevLayerDelta = prevLayer->getDelta();
@@ -91,8 +90,9 @@ void Layer::computeDelta(Layer * prevLayer){
 	}
 	
 }
+//update ,w = w -lr*deltaw - 2*L2*lr*w
 void Layer::updateWeight(){
-	
+	cblas_dscal(numIn*numOut, 1. -2.0*learningRate*L2Reg, weight, 1);
 	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, 
 				numIn, numOut, batchSize, -1.0*learningRate/static_cast<double>(batchSize),
 				in, numIn, delta, numOut, 

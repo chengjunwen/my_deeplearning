@@ -5,6 +5,7 @@
 #define _UTILITY_H_
 const double expThreshold = 45.0;
 const int maxUnit = 5000;
+const int L2Reg = 0.0001;
 
 void initWeightSigmoid(double *weight, int numIn, int numOut);
 void initWeightTanh(double *weight, int numIn, int numOut);

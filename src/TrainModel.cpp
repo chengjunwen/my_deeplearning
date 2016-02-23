@@ -36,7 +36,7 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 			int iterCount = epoch * numBatch + dataIter->getCurrentIndex() + 1;
 			double error =getErrorRate(dataSet, miniBatch, 1);
 			finish = time(NULL);
-			printf("epoch: %d trainingCost: %f valid error: %.4lf%% time : %.2f\n", epoch, cost/numBatch, error*100, difftime(finish, start));
+			printf("epoch: %d trainingCost: %f valid error: %.4lf%% time : %.2fs\n", epoch, cost/numBatch, error*100, difftime(finish, start));
 			if(error < bestError){
 			if(error < bestError*improvement_threshold){
 				patience = patience>iterCount*2 ? patience:iterCount*patience_increase;
