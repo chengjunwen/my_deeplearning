@@ -8,7 +8,7 @@
 #include "Layer.h"
 #include "IModel.h"
 
-//const int maxLayer=5;
+const int maxLayer=5;
 /*
  *	class MLP
  */
@@ -43,7 +43,7 @@ class MLP :public SuperviseModel {
 		double *label;
 //		bool gauss;
 		int numLayer;
-		Layer * layers[5];	
+		Layer * layers[maxLayer];	
 
 		void loadModel(FILE *fp);
 };
