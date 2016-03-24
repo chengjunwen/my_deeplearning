@@ -61,22 +61,26 @@ class Layer {
 		char layerName[15];
 };
 
+/*
+ * sigmoid class
+ */
 class SigmoidLayer : public Layer {
 	public :
 		SigmoidLayer(int numIn, int numOut);
 		SigmoidLayer(FILE * modelFile);
-//		SigmoidLayer(const char * fileName);
 		SigmoidLayer(int numIn, int numOut, double *w, double*b);
 	private :
 		void activFunction();
 		void activFunctionDerivate();
 		void initWeight();
 };
+/*
+ * ReLU class 
+ */
 class ReLULayer : public Layer {
 	public :
 		ReLULayer(int numIn, int numOut);
 		ReLULayer(FILE * modelFile);
-//		ReLULayer(const char * fileName);
 		ReLULayer(int numIn, int numOut, double *w, double*b);
 	private :
 		void activFunction();
@@ -87,7 +91,6 @@ class TanhLayer : public Layer {
 	public :
 		TanhLayer(int numIn, int numOut);
 		TanhLayer(FILE * modelFile);
-//		TanhLayer(const char * fileName);
 		TanhLayer(int numIn, int numOut, double *w, double*b);
 	private :
 		void activFunction();
@@ -102,7 +105,7 @@ class SoftmaxLayer : public Layer {
 		SoftmaxLayer(int numIn, int numOut, double *w, double*b);
 	private :
 		void activFunction();
-		void activFunctionDerivate(){}
+		void activFunctionDerivate(){}  // 该方法会被 logistic class 中的方法覆盖
 		void initWeight();
 };
 #endif

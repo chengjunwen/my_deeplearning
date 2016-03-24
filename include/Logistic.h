@@ -13,6 +13,7 @@ class Logistic : public SoftmaxLayer, public IModel {
 	public :
 		Logistic(int numIn, int numOut);
 		Logistic(const char * fileName);
+		Logistic(FILE * fd);
 		void setLearningRate(double lr){ Layer::setLearningRate(lr); }
 		void setBatchSize(int size){ Layer::setBatchSize(size); }
 		

@@ -4,6 +4,7 @@
 
 Logistic::Logistic(int numIn, int numOut):SoftmaxLayer(numIn, numOut), IModel(Supervise){}
 Logistic::Logistic(const char * fileName):SoftmaxLayer(fileName), IModel(Supervise){}
+Logistic::Logistic(FILE *fd):SoftmaxLayer(fd), IModel(Supervise){}
 
 void Logistic::trainBatch(){
 	forward();

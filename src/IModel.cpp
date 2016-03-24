@@ -6,7 +6,6 @@ IModel::~IModel(){
 }
 
 void IModel::setModelFile(const char * fileName){
-	delete[] modelFileName; 
 	modelFileName = new char[strlen(fileName)+1];
 	strcpy(modelFileName, fileName);
 }

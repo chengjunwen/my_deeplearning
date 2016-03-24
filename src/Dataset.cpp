@@ -108,7 +108,7 @@ void MNISTDataset::loadData(const char* DataFileName, const char* LabelFileName)
 	}
 	fread(&magicNum, sizeof(int),1 ,labelFile);
 	magicNum = changeEndian(magicNum);
-	printf("number of cols: %d\n", magicNum);
+	printf("number of magic: %d\n", magicNum);
 	
 	fread(&numImage, sizeof(int),1 ,labelFile);
 	numImage = changeEndian(numImage);

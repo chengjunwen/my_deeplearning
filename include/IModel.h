@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string.h>
 
+// 枚举， 有监督 或者 无监督
 enum ModelType { Unsupervise, Supervise };
 
 /*
@@ -37,15 +38,23 @@ class IModel {
 		ModelType modelType;
 };
 
+/*
+ * 有监督模型
+ */
 class SuperviseModel : public IModel {
 	public:
 		SuperviseModel();
 		virtual ~SuperviseModel(){}
 };
 
+/*
+ * 无监督模型
+ */
 class UnsuperviseModel : public IModel {
 	public:
 		UnsuperviseModel();
 		virtual ~UnsuperviseModel(){}
+		void setLabel(double *){}
+		double * getLabel(){ return NULL; } //纯虚函数必须实现， 否则该类不能实例化，此处实现是便于各类无监督模型的实例化
 };
 #endif

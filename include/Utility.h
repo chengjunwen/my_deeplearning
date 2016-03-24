@@ -7,13 +7,14 @@ const double expThreshold = 45.0;
 const int maxUnit = 5000;
 const int L2Reg = 0.0001;
 
+int changeEndian(int x);
+int maxElemIndex(double * arr, int size);
 void initWeightSigmoid(double *weight, int numIn, int numOut);
 void initWeightTanh(double *weight, int numIn, int numOut);
 void softmax(double *arr, int size);
-double sigmoidc(double x);
+
+double sigmoidc(double x);//考虑超过阈值的sigmoid和tanh ，避免计算出现 nan
 double tanhc(double x);
-int changeEndian(int x);
-int maxElemIndex(double * arr, int size);
 
 inline double sigmoid(double x){
 	return 1.0 / (1.0 + exp(-x));
@@ -40,7 +41,7 @@ inline double get_relu_derivate(double y){
 	else
 		return 1;
 }
-
+//产生 int 或者 double 型随机数
 inline int random_int(int low, int high){
 	return rand() % (high -low + 1) + low;
 }

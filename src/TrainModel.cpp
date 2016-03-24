@@ -52,7 +52,7 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 		else{
 			double validCost = getErrorRate(dataSet, miniBatch);
 			finish = time(NULL);
-			printf("epoch: %d trainingCost: %f valid cost: %f time : %2.f\n", epoch, cost/numBatch, validCost/numBatch, difftime(finish, start));
+			printf("epoch: %d trainingCost: %f valid cost: %f time : %2.f\n", epoch, cost/numBatch, validCost, difftime(finish, start));
 		}
 
 	}
@@ -113,3 +113,10 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 	delete iter;
 	return xx;
 }
+
+/*
+//layers独立时的训练模型
+StackLayerWiseModel::StackLayerWiseModel(IModel * model):model(model){}
+
+void StackLayerWiseModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpoch){
+}*/
