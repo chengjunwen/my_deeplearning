@@ -58,6 +58,10 @@ class UnsuperviseModel : public IModel {
 		double * getLabel(){ return NULL; } //纯虚函数必须实现， 否则该类不能实例化，此处实现是便于各类无监督模型的实例化
 };
 
+/*
+ *   层与层之间独立的模型， 例如 stackAutoEncoder， stackRBMs, 
+ */
+
 class LayerWiseModel : public IModel {
 	public:
 		LayerWiseModel();
@@ -65,6 +69,7 @@ class LayerWiseModel : public IModel {
 		virtual int getNumLayer() = 0;
 		virtual IModel * getLayerModel(int i)=0;
 
+//实现IMolde的纯虚函数
         void setLearningRate(double lr){}
         void setBatchSize(int){}
         void trainBatch(){}
