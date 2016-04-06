@@ -3,9 +3,11 @@
 
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
+
+const int maxLayer = 5;
 const double expThreshold = 45.0;
-const int maxUnit = 5000;
-const int L2Reg = 0.0001;
+const int maxUnit = 6000;
+const double L2Reg = 0.0001;
 
 int changeEndian(int x);
 int maxElemIndex(double * arr, int size);

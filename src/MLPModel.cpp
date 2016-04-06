@@ -14,7 +14,7 @@ void mnistTrain(){
 	mlp.addLayer(layer1);
 	mlp.addLayer(layer2);
 	TrainModel trainmodel(&mlp);
-	trainmodel.train(&mnist, 0.03, 81, 1000);
+	trainmodel.train(&mnist, 0.01, 20, 1000);
 }
 
 int main(){

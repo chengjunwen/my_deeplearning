@@ -30,6 +30,8 @@ class RBM : public UnsuperviseModel {
 		int getInputNumber(){ return numVis; }
 		int getOutputNumber(){ return numHid; }
 		double *getOutput(){ return h1; }
+		double *getWeight(){ return w; }
+		double *getBias(){ return bh; }
 		double getTrainingCost();
 
 		void saveModel(FILE *fp);

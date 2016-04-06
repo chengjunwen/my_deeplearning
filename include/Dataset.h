@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include "Utility.h"
+#include "IModel.h"
 
 class SubDataset;
 class BatchIterator;
@@ -110,5 +111,10 @@ class BatchIterator {
 		int size, batchSize;
 		int cur;
 		
+};
+class TransmissionDataset : public Dataset{
+public:
+	TransmissionDataset(Dataset * data, IModel *model);
+	~TransmissionDataset(){}
 };
 #endif

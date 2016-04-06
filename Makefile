@@ -14,10 +14,10 @@ LDFLAGS=-lm -pg -lgfortran
 LDFLAGS:=$(LDFLAGS) $(MKLLDFLAGS_64) #指定库文件的位置
 
 
-OBJECTS= Dataset.o Layer.o Logistic.o Utility.o IModel.o TrainModel.o MLP.o RBM.o
+OBJECTS= Dataset.o Layer.o Logistic.o Utility.o IModel.o TrainModel.o MLP.o RBM.o LayerWiseRBMs.o
 OBJECTS:=$(patsubst %.o, src/%.o,$(OBJECTS))
 
-MODELS=LogisticModel MLPModel RBMModel
+MODELS=LogisticModel MLPModel RBMModel DBNModel
 
 test:
 	@echo $(CFLAGS)
@@ -26,5 +26,5 @@ $(MODELS): % : src/%.o $(OBJECTS)
 $(OBJECTS): %.o : %.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 clean:
-	rm -rf $(MODELS) $(OBJECTS) *.out *.png *.txt src/*.o
+	rm -rf $(MODELS) $(OBJECTS) *.png *.txt src/*.o
 	find . -name "*swp" | xargs rm -rf

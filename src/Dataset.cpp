@@ -188,4 +188,46 @@ void BinDataset::loadData(const char *DataFileName, const char *LabelFileName){
 	printf("loading ok...\n");
 }
 
+TransmissionDataset::TransmissionDataset(Dataset *data, IModel* model){
+	numTrain = data->getTrainNumber();
+	numValid = data->getValidNumber();
+	numFeature = model->getOutputNumber();
+	numLabel = data->getLabelNumber();
 
+	trainData = new double[numTrain*numFeature];
+	validData = new double[numValid*numFeature];
+	trainLabel = new double[numTrain*numLabel];
+	validLabel = new double[numValid*numLabel];
+	SubDataset tmpData; 
+	int batchSize = 10;
+
+//train data
+	tmpData = data->getTrainDataset();
+	BatchIterator *iter = new BatchIterator(&tmpData, batchSize);
+	for( iter->first(); !iter->isDone(); iter->next()){
+		int theBatchSize = iter->getRealBatchSize();
+		int maskInd = iter->getCurrentIndex();
+		model->setBatchSize(theBatchSize);
+		model->setInput(iter->getCurrentDataBatch());
+		model->runBatch();
+		memcpy(trainData + maskInd*numFeature*batchSize, model->getOutput(), numFeature*theBatchSize*sizeof(double));
+	}
+	delete iter;
+
+//valid data
+    tmpData = data->getValidDataset();
+    iter = new BatchIterator(&tmpData, batchSize);
+    for( iter->first(); !iter->isDone(); iter->next()){
+        int theBatchSize = iter->getRealBatchSize();
+        int maskInd = iter->getCurrentIndex();
+        model->setBatchSize(theBatchSize);
+        model->setInput(iter->getCurrentDataBatch());
+        model->runBatch();
+        memcpy(validData + maskInd*numFeature*batchSize, model->getOutput(), numFeature*theBatchSize*sizeof(double));
+    }
+	delete iter;
+	
+// label
+	memcpy(trainLabel, data->getTrainDataBatch(0), numTrain*numLabel*sizeof(double));
+	memcpy(validLabel, data->getValidDataBatch(0), numValid*numLabel*sizeof(double));
+}	

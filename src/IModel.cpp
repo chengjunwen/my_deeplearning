@@ -1,6 +1,6 @@
 #include "IModel.h"
 
-IModel::IModel(ModelType t):modelType(t){}
+IModel::IModel(ModelType t):modelType(t), modelFileName(NULL){}
 IModel::~IModel(){
 //		delete[] modelFileName;
 }
@@ -11,6 +11,7 @@ void IModel::setModelFile(const char * fileName){
 }
 
 void IModel::saveModel(){
+	if(modelFileName==NULL) return ;
 	FILE *fp = fopen(modelFileName, "wb+");
 	if(fp==NULL){
 		printf("can not opne file : %s\n", modelFileName);
@@ -23,3 +24,5 @@ void IModel::saveModel(){
 
 SuperviseModel::SuperviseModel():IModel(Supervise){}
 UnsuperviseModel::UnsuperviseModel():IModel(Unsupervise){}
+
+LayerWiseModel::LayerWiseModel():IModel(Unsupervise){}

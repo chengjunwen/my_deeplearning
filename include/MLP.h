@@ -7,8 +7,7 @@
 #include "Utility.h"
 #include "Layer.h"
 #include "IModel.h"
-
-const int maxLayer=5;
+#include "Logistic.h"
 /*
  *	class MLP
  */

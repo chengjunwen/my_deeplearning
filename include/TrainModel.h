@@ -22,18 +22,18 @@ class TrainModel {
 /*
  * 该类用于layers间是相互独立的模型，例如 stackRBMs, layer间的学习率和batchsize可以不同
  */
-/*
-class LayerWiseModel {
+
+class LayerWiseTrainModel {
 public:	
-	LayerWiseModel(IModel * model);
+	LayerWiseTrainModel(LayerWiseModel * model);
 	void train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch);
-	void train(Dataset * dataSet, double lr[], int miniBatch, int maxEpoch);
-	void train(Dataset * dataSet, double lr, int miniBatch[], int maxEpoch);
-	void train(Dataset * dataSet, double lr[], int miniBatch[], int maxEpoch);
-	~LayerWiseModel(){}
+	void train(Dataset * dataSet, double lrs[], int miniBatch, int maxEpoch);
+	void train(Dataset * dataSet, double lr, int miniBatch, int maxEpochs[]);
+	void train(Dataset * dataSet, double lrs[], int miniBatch, int maxEpochs[]);
+	~LayerWiseTrainModel(){}
 private:
-	IModel* model;	
+	LayerWiseModel* model;	
 	
-};*/
+};
 #endif
 

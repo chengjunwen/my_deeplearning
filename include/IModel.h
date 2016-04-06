@@ -57,4 +57,25 @@ class UnsuperviseModel : public IModel {
 		void setLabel(double *){}
 		double * getLabel(){ return NULL; } //纯虚函数必须实现， 否则该类不能实例化，此处实现是便于各类无监督模型的实例化
 };
+
+class LayerWiseModel : public IModel {
+	public:
+		LayerWiseModel();
+		virtual ~LayerWiseModel(){}
+		virtual int getNumLayer() = 0;
+		virtual IModel * getLayerModel(int i)=0;
+
+        void setLearningRate(double lr){}
+        void setBatchSize(int){}
+        void trainBatch(){}
+        void runBatch(){}
+        void setInput(double *){}
+        void setLabel(double *){}
+        int getInputNumber(){ return 0; }
+        int getOutputNumber(){ return 0; }
+        double * getOutput(){ return NULL;}
+        double * getLabel(){ return NULL;}
+        double getTrainingCost(){ return 0; }
+
+};
 #endif

@@ -114,9 +114,59 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 	return xx;
 }
 
-/*
 //layers独立时的训练模型
-StackLayerWiseModel::StackLayerWiseModel(IModel * model):model(model){}
+LayerWiseTrainModel::LayerWiseTrainModel(LayerWiseModel * model):model(model){}
 
-void StackLayerWiseModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpoch){
-}*/
+void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpoch){
+	int numLayer = model->getNumLayer();
+	int * maxEpochs = new int[numLayer];
+	double *lrs = new double[numLayer];
+	for(int i=0; i<numLayer; i++){
+		maxEpochs[i] = maxEpoch;
+		lrs[i] = lr;
+	}
+	train(dataset, lrs, miniBatch, maxEpochs);
+	delete[] lrs;
+	delete[] maxEpochs;
+}
+
+void LayerWiseTrainModel::train(Dataset * dataset, double lrs[], int miniBatch, int maxEpoch){
+	int numLayer = model->getNumLayer();
+	int *maxEpochs = new int[numLayer];
+	for(int i=0; i<numLayer; i++){
+		maxEpochs[i] = maxEpoch;
+	}
+	train(dataset, lrs, miniBatch, maxEpochs);
+	delete[] maxEpochs;
+}
+
+void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpochs[]){    int numLayer = model->getNumLayer();
+    double * lrs = new double[numLayer];
+    for(int i=0; i<numLayer; i++){
+        lrs[i] = lr;
+    }
+    train(dataset, lrs, miniBatch, maxEpochs);
+    delete[] lrs;
+}
+
+void LayerWiseTrainModel::train(Dataset * dataset, double lrs[], int miniBatch, int maxEpochs[]){    
+	int numLayer = model->getNumLayer();
+	Dataset *curData = dataset;
+    for(int i=0; i<numLayer; i++){
+	printf("pretrain layer %d\n", i);
+		TrainModel trainModel(model->getLayerModel(i));
+		if(i != 0){
+			Dataset * tmpData = new TransmissionDataset(curData, model->getLayerModel(i-1));
+			if(curData!=dataset)
+				delete curData;
+			curData = tmpData;
+		}
+		trainModel.train(curData, lrs[i], miniBatch, maxEpochs[i]);
+    }
+	if(curData!=dataset){
+		delete curData;
+	}
+	model->saveModel();
+}
+
+
