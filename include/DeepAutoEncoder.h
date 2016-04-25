@@ -30,6 +30,9 @@ class DeepAutoEncoder : public UnsuperviseModel {
 		double * getOutput(){ return layers[numLayers-1]->getOutput(); }
 
 		void saveModel(FILE *fp);
+
+		void activationMaximization(int layerIdx, double avgNorm, int epoch,
+                char amSampleFile[]);
 	private:
 		int numLayers;
 		int unitSizes[maxLayer+1];
@@ -41,6 +44,12 @@ class DeepAutoEncoder : public UnsuperviseModel {
 		void loadModel(FILE *fp);
 
 		int batchSize;
+
+//      激励最大化
+        double maximizeUnit(int layerIdx, int unitIdx, double*unitSample, double argvNorm, int epoch);
+        void saveSample(FILE *fp, double *s, int n); //存储最终的sample
+        double *AMSample;
+
 };
 
 #endif

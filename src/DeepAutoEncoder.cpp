@@ -1,4 +1,5 @@
 #include "DeepAutoEncoder.h"
+#include "mkl_cblas.h"
 
 DeepAutoEncoder::DeepAutoEncoder():numLayers(0){}
 
@@ -124,3 +125,93 @@ double DeepAutoEncoder::getTrainingCost(){
 	}
 	return cost /batchSize;
 }
+
+/*
+*  存储激励最大化的最终输入sample
+*/
+void DeepAutoEncoder::saveSample(FILE *fp, double *s, int n){                                                  
+    fwrite(s, sizeof(double), n, fp);
+}
+
+/*
+ * 激励最大化第 layerdx 层，
+ */
+void DeepAutoEncoder::activationMaximization(int layerIdx, double argvNorm, int epoch, char * AMSampleFile){
+    int AMnumOut = layers[layerIdx]->numIn;
+    int AMnumIn = layers[0]->numOut;
+    
+    if(AMSample == NULL){
+        AMSample = new double[AMnumOut*AMnumIn];
+    }
+    for(int i=0; i<AMnumOut*AMnumIn; i++){
+        AMSample[i] = random_double(0, 1);
+    }
+
+    FILE * fp = fopen(AMSampleFile, "w+");
+    fwrite(&AMnumIn, sizeof(int), 1, fp);
+    fwrite(&AMnumOut, sizeof(int), 1, fp);
+    for(int i=0; i<AMnumOut; i++){
+        double * unitSample = AMSample + i*AMnumIn;
+        time_t start, stop;
+        start = time(NULL);
+        double maxValue = maximizeUnit(layerIdx, i, unitSample, argvNorm, epoch);
+        stop = time(NULL);
+        printf("layer: %d , unit: %d, max value : %.6lf\t time: %.2lf s\n", layerIdx, i, maxValue, difftime(stop, start));
+        saveSample(fp, unitSample, AMnumIn);
+    }
+
+    fclose(fp);
+}
+/*
+ *  最大化第 unitIdx个单元
+ */
+double DeepAutoEncoder::maximizeUnit(int layerIdx, int unitIdx,
+        double* unitSample, double avgNorm, int epoch)
+{
+    int AMnumIn = layers[0]->numIn;
+
+    // average norm
+    double curNorm = squareNorm(unitSample, AMnumIn, 1);
+    cblas_dscal(AMnumIn, avgNorm / curNorm, unitSample, 1);
+
+    double curval;
+
+    for(int k=0; k<epoch; k++){
+
+        // forward
+        for(int i = 0; i <= layerIdx; i++){
+            if(i==0){
+                layers[i]->setInput(unitSample);
+            }
+            else{
+                layers[i]->setInput(layers[i-1]->h);
+            }
+            layers[i]->getHFromX(layers[i]->x, layers[i]->h);
+        }
+        curval = layers[layerIdx]->h[unitIdx];
+        //printf("unit index %d epoch %d current maximal : %.8lf\n", unitIdx+1, k, curval);
+
+        // back-propagate
+        for(int i = layerIdx; i >= 0; i--){
+            if(i == layerIdx){
+                layers[i]->getAMDelta(unitIdx, NULL);
+            }else{
+                layers[i]->getAMDelta(-1, layers[i+1]->AMdelta);
+            }
+        }
+
+        // 自适应learning rate
+        double lr = 0.01 * cblas_dasum(AMnumIn, unitSample, 1) /
+                    cblas_dasum(AMnumIn, layers[0]->AMdelta, 1);
+
+        // update sample
+        cblas_daxpy(AMnumIn, lr,
+                    layers[0]->AMdelta, 1,
+                    unitSample, 1);
+
+        // average norm
+        curNorm = squareNorm(unitSample, AMnumIn, 1);
+        cblas_dscal(AMnumIn, avgNorm / curNorm, unitSample, 1);
+    }
+    return curval;
+}                                           

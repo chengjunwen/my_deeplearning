@@ -50,6 +50,10 @@ class EncoderLayer {
 		int numIn, numOut;
 		double lr;
 		int batchSize;
+
+//Activition maximization
+        double *AMdelta;
+		void getAMDelta(int unitIdx, double *lastAMdelta);
 };
 
 #endif

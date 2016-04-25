@@ -1,6 +1,8 @@
 #include "EncoderLayer.h"
 #include "mkl_cblas.h"
 
+double static temp[maxUnit*maxUnit];
+
 EncoderLayer::EncoderLayer(int numIn, int numOut){
 	this->numIn = numIn;
 	this->numOut = numOut;
@@ -171,3 +173,43 @@ void EncoderLayer::updateWeight(double * prevH){
 				bI, batchSize, dh, numOut, 
 				1, b, numOut);
 }
+
+/**
+ * 计算最大化激励
+ * 如果lastAMdelta为NULL，则表示最大化该层的第unitIdx个隐藏结点
+ *                否则unitIdx为-1
+ * lastAMdelta 上层计算的梯度
+ */
+
+void EncoderLayer::getAMDelta(int unitIdx, double *lastAMdelta){
+    if(unitIdx == -1){
+        for(int i=0; i<numOut; i++) {
+            if(binOut){
+                temp[i] = lastAMdelta[i] * get_sigmoid_derivate(h[i]);
+            }
+            else{
+                temp[i] = lastAMdelta[i];
+            }
+        }   
+    }
+    else{
+        for(int i=0; i<numOut; i++){
+            if(i==unitIdx){
+                if(binOut){
+                    temp[i]= get_sigmoid_derivate(h[i]);
+                }
+                else
+                    temp[i] = 1.0;
+            }
+            else{
+                temp[i] = 0.0;
+            }
+        }
+    }
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                numIn, 1, numOut,
+                1, w, numOut, temp, 1,
+                0, AMdelta, 1); 
+
+}
+

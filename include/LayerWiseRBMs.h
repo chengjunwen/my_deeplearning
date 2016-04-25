@@ -29,7 +29,7 @@ class LayerWiseRBMs : public LayerWiseModel {
 		IModel *getLayerModel(int i){ return layers[i]; }
 		void toMLP(MLP *mlp, int numLabel);	//预训练结束之后,权重值赋给MLP
 		
-		void activitionMaximization(int layerIdx, double argvNorm, int epoch, char *AMSampleFile);
+		void activationMaximization(int layerIdx, double argvNorm, int epoch, char *AMSampleFile);
 	private:
 		int numLayers;	    				//模型层数
 		int unitSizes[maxLayer+1];			//每层节点单元数
@@ -38,7 +38,7 @@ class LayerWiseRBMs : public LayerWiseModel {
 
 //		激励最大化
 		double maximizeUnit(int layerIdx, int unitIdx, double*unitSample, double argvNorm, int epoch);
-		void saveSample(FILE *fp, double *s, int n);
+		void saveSample(FILE *fp, double *s, int n); //存储最终的sample
 		double *AMSample;
 };
 #endif
