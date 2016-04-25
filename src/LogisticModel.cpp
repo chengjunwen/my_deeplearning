@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Utility.h"
 #include "Logistic.h"
-#include "IModel.h"
 #include "TrainModel.h"
 #include "Dataset.h"
 

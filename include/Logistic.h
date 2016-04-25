@@ -7,7 +7,7 @@
 #include "mkl_cblas.h"
 #include "Utility.h"
 #include "Layer.h"
-#include "IModel.h"
+#include "IModelComponent.h"
 
 class Logistic : public SoftmaxLayer, public IModel {
 	public :

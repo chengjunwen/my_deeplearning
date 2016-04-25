@@ -1,6 +1,5 @@
 #include "Utility.h"                                                                     
 #include "DeepAutoEncoder.h"
-#include "IModel.h"
 #include "TrainModel.h"
 #include "Dataset.h"
 

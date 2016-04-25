@@ -230,4 +230,47 @@ TransmissionDataset::TransmissionDataset(Dataset *data, IModel* model){
 // label
 	memcpy(trainLabel, data->getTrainDataBatch(0), numTrain*numLabel*sizeof(double));
 	memcpy(validLabel, data->getValidDataBatch(0), numValid*numLabel*sizeof(double));
-}	
+}
+
+MergeDataset::MergeDataset(Dataset * originDatas[], int numSets){
+    numFeature = 0;
+    numLabel = originDatas[0]->getLabelNumber();
+    numTrain = originDatas[0]->getTrainNumber();
+    numValid = originDatas[0]->getValidNumber();
+    for(int i=0; i<numSets; i++){
+        numFeature += originDatas[i] -> getFeatureNumber();
+    }
+    trainData = new double[numTrain*numFeature];
+    trainLabel = new double[numTrain*numLabel];
+    validData = new double[numValid*numFeature];
+    validLabel = new double[numValid*numLabel];
+    memset(trainData, 0, sizeof(double)*numTrain*numFeature);
+    memset(trainLabel, 0, sizeof(double)*numLabel*numTrain);
+    memset(validData, 0, sizeof(double)*numValid*numFeature);
+    memset(validLabel, 0, sizeof(double)*numLabel*numValid);
+    int maskOffset =0;
+    for(int i=0; i<numTrain; i++){
+        for(int j=0; j<numSets; j++){
+            memcpy(trainData+maskOffset,
+                    originDatas[j]->getTrainDataBatch(i),
+                    originDatas[j]->getFeatureNumber()*sizeof(double));
+            maskOffset += originDatas[j]->getFeatureNumber();
+        }
+    }
+    maskOffset =0;
+    for(int i=0; i<numValid; i++){
+        for(int j=0; j<numSets; j++){
+            memcpy(validData+maskOffset,
+                    originDatas[j]->getValidDataBatch(i),
+                    originDatas[j]->getFeatureNumber()*sizeof(double));
+            maskOffset += originDatas[j]->getFeatureNumber();
+        }
+    }
+
+    memcpy( trainLabel, originDatas[0]->getTrainLabelBatch(0), numTrain*numLabel*sizeof(double) );
+    memcpy( validLabel, originDatas[0]->getValidLabelBatch(0), numValid*numLabel*sizeof(double) );
+//todo
+}
+MergeDataset::~MergeDataset(){}
+
+

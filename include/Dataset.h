@@ -6,11 +6,14 @@
 #include <cstring>
 #include <cstdlib>
 #include "Utility.h"
-#include "IModel.h"
+#include "IModelComponent.h"
 
 class SubDataset;
 class BatchIterator;
 
+/*
+ * 基类 Dataset
+ */
 class Dataset {
 	public:
 		Dataset();
@@ -112,9 +115,22 @@ class BatchIterator {
 		int cur;
 		
 };
+
+/*
+ * 根据模型和输入数据， 计算该模型的输出
+ */
 class TransmissionDataset : public Dataset{
 public:
 	TransmissionDataset(Dataset * data, IModel *model);
 	~TransmissionDataset(){}
+};
+
+/*
+* 将多种cbind 融合
+*/
+class MergeDataset : public Dataset {
+    public :
+        MergeDataset(Dataset * originDatas[], int numSets);
+        ~MergeDataset();
 };
 #endif

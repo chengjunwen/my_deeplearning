@@ -14,14 +14,10 @@ class DeepAutoEncoder : public UnsuperviseModel {
 		void setInput(double *in){ layers[0]->setInput(in); }
 //设置输入输出是实值还是二值分布
         void setGaussIn(bool f){
-            for(int i=0; i<numLayers; i++){                                              
-                layers[i]->setGaussIn(f);
-            }
+        	layers[0]->setGaussIn(f);
         }
         void setGaussOut(bool f){
-            for(int i=0; i<numLayers; i++){
-                layers[i]->setGaussOut(f);
-            }
+        	layers[0]->setGaussOut(f);
         }
 
 		void trainBatch();		//训练模型

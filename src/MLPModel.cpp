@@ -1,6 +1,5 @@
 #include "Utility.h"
 #include "MLP.h"
-#include "IModel.h"
 #include "TrainModel.h"
 #include "Dataset.h"
 #include "Logistic.h"

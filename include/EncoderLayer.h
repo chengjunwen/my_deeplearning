@@ -7,7 +7,7 @@
 #include <cmath>
 #include "Dataset.h"
 #include "Utility.h"
-#include "IModel.h"
+#include "IModelComponent.h"
 
 class DeepAutoEncoder;
 class AutoEncoder;

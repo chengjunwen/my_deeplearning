@@ -1,10 +1,15 @@
 #include <cmath>
 #include <cstdlib>
+#include <string>
+#include <cstring>
+using namespace std;
+
 
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
 const int maxLayer = 5;
+const int maxModel = 5;
 const double expThreshold = 45.0;
 const int maxUnit = 6000;
 const double L2Reg = 0.0001;

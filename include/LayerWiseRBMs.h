@@ -2,7 +2,7 @@
 #define _LAYERWISERBMS_H_
 
 #include "RBM.h"
-#include "IModel.h"
+#include "IModelComponent.h"
 #include "MLP.h"
 
 /*
@@ -16,19 +16,16 @@ class LayerWiseRBMs : public LayerWiseModel {
 		void setPersistent(bool f);
 		void addLayer(RBM * layer);
 		void saveModel(FILE *fp);
-		void setGuassVisible(bool f){
-			for(int i=0; i<numLayers; i++){
-				layers[i]->setGuassVisible(f);
-			}
+		void setGaussVisible(int i, bool f){
+			layers[i]->setGaussVisible(f);
 		}
-		void setGuassHidden(bool f){
-			for(int i=0; i<numLayers; i++){
-				layers[i]->setGuassHidden(f);
-			}
+		void setGaussHidden(int i,bool f){
+			layers[i]->setGaussHidden(f);
 		}
 		~LayerWiseRBMs();
 		
-		int getNumLayer(){ return numLayers; }
+		int getLayerNumber(){ return numLayers; }
+		RBM * getLayer(int i){ return layers[i]; }
 		IModel *getLayerModel(int i){ return layers[i]; }
 		void toMLP(MLP *mlp, int numLabel);	//预训练结束之后,权重值赋给MLP
 		

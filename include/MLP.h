@@ -6,7 +6,7 @@
 #include "mkl_cblas.h"
 #include "Utility.h"
 #include "Layer.h"
-#include "IModel.h"
+#include "IModelComponent.h"
 #include "Logistic.h"
 /*
  *	class MLP

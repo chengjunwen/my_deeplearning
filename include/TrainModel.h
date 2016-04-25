@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <time.h>
-#include "IModel.h"
+#include "IModelComponent.h"
 #include "Dataset.h"
 /*
  * 抽象化训练过程， 传入所需训练的模型和训练数据即可,TrainModel class用于是所有layer是整体的模型
