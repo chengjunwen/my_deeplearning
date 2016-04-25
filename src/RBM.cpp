@@ -3,7 +3,6 @@
 
 static double temp[maxUnit*maxUnit];
 
-RBM::RBM(){}
 RBM::RBM(int numIn, int numOut){
 	numVis = numIn;
 	numHid = numOut;
@@ -52,6 +51,7 @@ void RBM::init(){
 	bv = new double[numVis];
 	bh = new double[numHid];
 
+	AMDelta = NULL;
 }
 void RBM::initWeight(){
 	initWeightSigmoid(w, numVis, numHid);
@@ -69,6 +69,11 @@ void RBM::runBatch(){
 	mallocMemory();
 	runChain();
 }
+
+/*
+ *	分配内存
+ *
+ */
 void RBM::mallocMemory(){
 	if(ph1==NULL) ph1=new double[batchSize*numHid];
 	if(ph2==NULL) ph2=new double[batchSize*numHid];
@@ -76,7 +81,13 @@ void RBM::mallocMemory(){
 	if(h2==NULL) h2=new double[batchSize*numHid];
 	if(pv==NULL) pv=new double[batchSize*numVis];
 	if(v2==NULL) v2=new double[batchSize*numVis];
+	if(AMDelta==NULL) AMDelta=new double[numVis];
 }
+
+/*
+ *	链式前向
+ *
+ */
 void RBM::runChain(){
 	getProbH(v, ph1);
 	if(binHid)
@@ -132,6 +143,11 @@ void RBM::getSampleV(double *pv, double *v){
 		v[i] = random_double(0,1) < pv[i] ? 1:0;
 	}
 }
+
+/*
+ *gibbs 采样
+ *
+ */
 void RBM::gibbs_hvh(double *hstart, double *h, double *ph, double *v, double *pv){
 
 	cblas_dcopy(batchSize*numHid, hstart, 1, h, 1);
@@ -151,6 +167,10 @@ void RBM::gibbs_hvh(double *hstart, double *h, double *ph, double *v, double *pv
 	}
 }
 
+/*
+ * 更新权重
+ *
+ */
 void RBM::updateWeight(){
 	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, 
 				numVis, numHid, batchSize, lr/static_cast<double>(batchSize), 
@@ -253,4 +273,38 @@ void RBM::loadModel(FILE *fp){
 	fread(bv, sizeof(double), numVis, fp);
 	fread(bh, sizeof(double), numHid, fp);
 	printf("numIn: %d\tnumOut: %d\n", numVis, numHid);
+}
+
+/*
+ * Activition Maximization
+ * lastAMDelta 为NULL时， 表示最大激励化该层的节点
+ *
+ */
+
+void RBM::getAMDelta(int idx, double *lastAMDelta){
+	if(lastAMDelta == NULL){
+		for(int i=0; i< numHid; i++){
+			if(i == idx){
+				if(binHid)
+					temp[i] = get_sigmoid_derivate(ph1[i]);
+				else
+					temp[i] = 1.0;
+			}
+			else{
+				temp[i] = 0.0;
+			}
+		}
+	}
+	else{
+		for(int i=0; i<numHid; i++){
+			if(binHid)
+				temp[i] = lastAMDelta[i] * get_sigmoid_derivate(ph1[i]);
+			else
+				temp[i] = lastAMDelta[i];
+		}
+	}
+	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+				numVis, 1, numHid, 1, 
+				w, numHid, temp, 1,
+				0, AMDelta, 1);
 }

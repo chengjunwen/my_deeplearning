@@ -72,3 +72,15 @@ int maxElemIndex(double *arr, int size){
 	}
 	return maxIndex;
 }
+
+double squareNorm(double *sample, int col, int size){
+	double sum;
+	for(int i=0; i<size; i++){
+		double sq =0;
+		for(int j=0; j<col; j++){
+			sq += sample[i*col+col] * sample[i*col+col];
+		}
+		sum += sqrt(sq);
+	}
+	return sum/size;
+}

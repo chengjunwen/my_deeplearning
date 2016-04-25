@@ -18,6 +18,8 @@ void softmax(double *arr, int size);
 double sigmoidc(double x);//考虑超过阈值的sigmoid和tanh ，避免计算出现 nan
 double tanhc(double x);
 
+double squareNorm(double *sample, int col, int size);
+
 inline double sigmoid(double x){
 	return 1.0 / (1.0 + exp(-x));
 }
