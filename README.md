@@ -1,7 +1,7 @@
 ### deeplearning相关算法
 
 1. logistic, 逻辑回归   
-	make LogisticModel
+		make LogisticModel
 2. mlp,  
 	make MLPModel
 
