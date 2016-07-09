@@ -1,5 +1,7 @@
 ### deeplearning相关算法
 
+Deeplearning 部分网络的C++实现
+
 1. logistic, 逻辑回归   
 		make LogisticModel
 2. mlp,  
