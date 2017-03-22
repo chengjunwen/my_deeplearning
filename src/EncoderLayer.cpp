@@ -19,8 +19,18 @@ EncoderLayer::EncoderLayer(int numIn, int numOut, double *w, double *b, double *
 	memcpy(this->c, c, numIn*sizeof(double));
 }
 
+EncoderLayer::EncoderLayer(const char * fileName){                                           
+	FILE *fp = fopen(fileName, "rb");
+	if(fp==NULL){
+		printf("can not open file %s\n", fileName);
+		exit(1);
+	}
+//	init();
+    loadModel(fp);
+}
+
 EncoderLayer::EncoderLayer(FILE *fp){
-	init();
+//	init();
 	loadModel(fp);
 }
 
@@ -69,6 +79,7 @@ void EncoderLayer::saveModel(FILE *fp){
 void EncoderLayer::loadModel(FILE *fp){
 	fread(&numIn, sizeof(int), 1, fp);
 	fread(&numOut, sizeof(int), 1, fp);
+	init();
 	fread(w, sizeof(double), numIn*numOut, fp);
 	fread(b, sizeof(double), numOut, fp);
 	fread(c, sizeof(double), numIn, fp);

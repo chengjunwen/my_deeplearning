@@ -52,7 +52,7 @@ void TrainModel::train(Dataset * dataSet, double lr, int miniBatch, int maxEpoch
 		else{
 			double validCost = getErrorRate(dataSet, miniBatch);
 			finish = time(NULL);
-			printf("epoch: %d trainingCost: %f valid cost: %f time : %2.f\n", epoch, cost/numBatch, validCost, difftime(finish, start));
+			printf("epoch: %d trainingCost: %f valid cost: %f time : %2.fs\n", epoch, cost/numBatch, validCost, difftime(finish, start));
 		}
 
 	}
@@ -118,7 +118,7 @@ double TrainModel::getErrorRate(Dataset * dataset, int miniBatch, bool f){
 LayerWiseTrainModel::LayerWiseTrainModel(LayerWiseModel * model):model(model){}
 
 void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpoch){
-	int numLayer = model->getNumLayer();
+	int numLayer = model->getLayerNumber();
 	int * maxEpochs = new int[numLayer];
 	double *lrs = new double[numLayer];
 	for(int i=0; i<numLayer; i++){
@@ -131,7 +131,7 @@ void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int
 }
 
 void LayerWiseTrainModel::train(Dataset * dataset, double lrs[], int miniBatch, int maxEpoch){
-	int numLayer = model->getNumLayer();
+	int numLayer = model->getLayerNumber();
 	int *maxEpochs = new int[numLayer];
 	for(int i=0; i<numLayer; i++){
 		maxEpochs[i] = maxEpoch;
@@ -140,7 +140,8 @@ void LayerWiseTrainModel::train(Dataset * dataset, double lrs[], int miniBatch, 
 	delete[] maxEpochs;
 }
 
-void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpochs[]){    int numLayer = model->getNumLayer();
+void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int maxEpochs[]){
+	int numLayer = model->getLayerNumber();
     double * lrs = new double[numLayer];
     for(int i=0; i<numLayer; i++){
         lrs[i] = lr;
@@ -150,7 +151,7 @@ void LayerWiseTrainModel::train(Dataset * dataset, double lr, int miniBatch, int
 }
 
 void LayerWiseTrainModel::train(Dataset * dataset, double lrs[], int miniBatch, int maxEpochs[]){    
-	int numLayer = model->getNumLayer();
+	int numLayer = model->getLayerNumber();
 	Dataset *curData = dataset;
     for(int i=0; i<numLayer; i++){
 	printf("pretrain layer %d\n", i);

@@ -1,4 +1,8 @@
 #include "Dataset.h"
+#include <iostream>
+#include <ctring>
+#include <cstdlib>
+using namespace std;
 
 Dataset::Dataset(){
 	numFeature =0;
@@ -188,12 +192,82 @@ void BinDataset::loadData(const char *DataFileName, const char *LabelFileName){
 	printf("loading ok...\n");
 }
 
+void SVMDataset::loadData(const char* trainDataFileName, const char * validDataFileName){
+
+	char line[40000];
+	char *saveptr1;
+	char *saveptr2; 
+
+	FILE *fp = fopen(trainDataFileName, 'r');
+	fscanf(fp, "%d", &numTrain);
+	fscanf(fp, "%d", &numFeature);
+	fscanf(fp, "%d", &numLabel);
+	printf("numTrain: %d, numFeature: %d, numLabel: %d\n", numTrain, numFeature, numLabel);
+	
+	trainData = new double[numTrain*numFeature];
+	trainLabel = new double[numTrain*numLabel];
+	
+	memset(trainData, 0, numTrain*numFeature*sizeof(double));
+	memset(trainLabel, 0, numTrain*numLabel*sizeof(double));
+
+	for(int i=0; i<numTrain; ++i){
+		fgets(line, 40000, fp);
+		char * token = strtok_r(line, " ", saveptr1);
+		int label = atoi(token)-1;
+		trainLabel[i*numLabel + label] = 1.0;
+		if(saveptr[0]!='\n'){
+			while(token=strtok_r(NULL, " ", saveptr1)!=NULL){
+				int index;
+				double value;
+				sscanf(token, "%d:%lf", &index, &value);
+				trainData[i*numFeature + index-1] = value;
+				
+			}
+			
+		}
+	}
+	fclose(fp);
+
+
+	FILE *fp = fopen(validDataFileName, 'r');
+	fscanf(fp, "%d", &numValid);
+	fscanf(fp, "%d", &numFeature);
+	fscanf(fp, "%d", &numLabel);
+	printf("numValidate: %d, numFeature: %d, numLabel: %d\n", numValid, numFeature, numLabel);
+	
+	validData = new double[numValid*numFeature];
+	validLabel = new double[numValid*numLabel];
+	
+	memset(validData, 0, numValidn*numFeature*sizeof(double));
+	memset(validLabel, 0, numValid*numLabel*sizeof(double));
+
+	char *saveptr1;
+	char *saveptr2; 
+	for(int i=0; i<numValid; ++i){
+		fgets(line, 40000, fp);
+		char * token = strtok_r(line, " ", saveptr1);
+		int label = atoi(token)-1;
+		validLabel[i*numLabel + label] = 1.0;
+		if(saveptr[0]!='\n'){
+			while(token=strtok_r(NULL, " ", saveptr1)!=NULL){
+				int index;
+				double value;
+				sscanf(token, "%d:%lf", &index, &value);
+				validData[i*numFeature + index-1] = value;
+				
+			}
+			
+		}
+	}
+	fclose(fp);
+
+}
+
 TransmissionDataset::TransmissionDataset(Dataset *data, IModel* model){
 	numTrain = data->getTrainNumber();
 	numValid = data->getValidNumber();
 	numFeature = model->getOutputNumber();
 	numLabel = data->getLabelNumber();
-
 	trainData = new double[numTrain*numFeature];
 	validData = new double[numValid*numFeature];
 	trainLabel = new double[numTrain*numLabel];
@@ -226,10 +300,9 @@ TransmissionDataset::TransmissionDataset(Dataset *data, IModel* model){
         memcpy(validData + maskInd*numFeature*batchSize, model->getOutput(), numFeature*theBatchSize*sizeof(double));
     }
 	delete iter;
-	
 // label
-	memcpy(trainLabel, data->getTrainDataBatch(0), numTrain*numLabel*sizeof(double));
-	memcpy(validLabel, data->getValidDataBatch(0), numValid*numLabel*sizeof(double));
+	memcpy(trainLabel, data->getTrainLabelBatch(0), numTrain*numLabel*sizeof(double));
+	memcpy(validLabel, data->getValidLabelBatch(0), numValid*numLabel*sizeof(double));
 }
 
 MergeDataset::MergeDataset(Dataset * originDatas[], int numSets){
@@ -266,7 +339,6 @@ MergeDataset::MergeDataset(Dataset * originDatas[], int numSets){
             maskOffset += originDatas[j]->getFeatureNumber();
         }
     }
-
     memcpy( trainLabel, originDatas[0]->getTrainLabelBatch(0), numTrain*numLabel*sizeof(double) );
     memcpy( validLabel, originDatas[0]->getValidLabelBatch(0), numValid*numLabel*sizeof(double) );
 //todo

@@ -61,12 +61,22 @@ class MNISTDataset : public Dataset {
 		void loadData(const char* DataFileName, const char * LabelFileName);
 		~MNISTDataset(){}
 };
+/*
+ * SVM 格式的数据输入(维度大小有限制，4000以内)
+ * trainDataFile: numTrain, numFeature, numLabel, data(label and features)
+ * validDataFile: numValid, numFeature, numLabel, data
+ * */
 class SVMDataset : public Dataset {
 	public:
 		SVMDataset(){}
 		void loadData(const char* trainDataFileName, const char * validDataFileName);
 		~SVMDataset(){}
 };
+/*
+ * 二进制 格式的数据输入
+ * DataFile: numTrain, numValid, numFeature, data
+ * LabelFile: numLabel, data
+ * */
 class BinDataset : public Dataset {
 	public:
 		BinDataset(){}

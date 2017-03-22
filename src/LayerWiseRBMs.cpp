@@ -73,7 +73,7 @@ void LayerWiseRBMs::saveSample(FILE *fp, double *s, int n){
 /*
  * 激励最大化第 layerdx 层，
  */
-void LayerWiseRBMs::activitionMaximization(int layerIdx, double argvNorm, int epoch, char * AMSampleFile){
+void LayerWiseRBMs::activationMaximization(int layerIdx, double argvNorm, int epoch, char * AMSampleFile){
 	int AMnumOut = layers[layerIdx]->numHid;
 	int AMnumIn = layers[0]->numVis;
 	

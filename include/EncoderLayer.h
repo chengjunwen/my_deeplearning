@@ -15,9 +15,10 @@ class AutoEncoder;
 class EncoderLayer {
 	public:
 		EncoderLayer(int numIn, int numOut);
+		EncoderLayer(const char * fileName);
 		EncoderLayer(FILE *fp);
 		EncoderLayer(int numIn, int numOut, double *w, double *b, double *c);
-		~EncoderLayer();
+		virtual ~EncoderLayer();
 		void setLearningRate(double lrt){ lr = lrt; }
 		void setBatchSize(int size){ batchSize = size; }
 		void setInput(double *in){ x = in; }
@@ -30,7 +31,7 @@ class EncoderLayer {
 		void saveModel(FILE *fp);
 
 		friend class DeepAutoEncoder;
-		friend class AutoEncoder; 
+		friend class AutoEncoder;
 	private:
 		void init();
 		void initWeight();
@@ -42,7 +43,7 @@ class EncoderLayer {
 		
 		void updateWeight(double *prevH);
 		void loadModel(FILE *fp);
-
+		
 		double *x, *y, *h, *dh, *dy;
 		double *w, *b, *c ,*bI;
 		bool binIn, binOut;

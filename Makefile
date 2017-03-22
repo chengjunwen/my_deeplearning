@@ -21,10 +21,10 @@ MODELS=LogisticModel MLPModel RBMModel DBNModel DeepAutoEncoderModel MultiModalM
 
 test:
 	@echo $(CFLAGS)
-$(MODELS): % : src/%.o $(OBJECTS)
+$(MODELS): % : main/%.o $(OBJECTS)
 	$(CPP) $^ $(LDFLAGS) -o $@
 $(OBJECTS): %.o : %.cpp
 	$(CPP) $(CPPFLAGS) -o $@ $<
 clean:
-	rm -rf $(MODELS) $(OBJECTS) *.png *.txt src/*.o
+	rm -rf $(MODELS) $(OBJECTS) *.png *.txt src/*.o main/*.o
 	find . -name "*swp" | xargs rm -rf
