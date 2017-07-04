@@ -14,6 +14,7 @@ typedef double LayerBuff[maxUnit * maxUnit];	//缓存，存储计算过程中的
  */
 class Layer {
 	public :
+		Lsyer(){};
 		Layer(int numIn, int numOut, const char *Name);
 		Layer(FILE * modelFile, const char *Name);
 		Layer(const char *fileName,const char *Name);
