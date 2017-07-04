@@ -1,6 +1,6 @@
 #include "Dataset.h"
 #include <iostream>
-#include <ctring>
+#include <cstring>
 #include <cstdlib>
 using namespace std;
 
@@ -198,7 +198,7 @@ void SVMDataset::loadData(const char* trainDataFileName, const char * validDataF
 	char *saveptr1;
 	char *saveptr2; 
 
-	FILE *fp = fopen(trainDataFileName, 'r');
+	FILE *fp = fopen(trainDataFileName, "r");
 	fscanf(fp, "%d", &numTrain);
 	fscanf(fp, "%d", &numFeature);
 	fscanf(fp, "%d", &numLabel);
@@ -212,11 +212,11 @@ void SVMDataset::loadData(const char* trainDataFileName, const char * validDataF
 
 	for(int i=0; i<numTrain; ++i){
 		fgets(line, 40000, fp);
-		char * token = strtok_r(line, " ", saveptr1);
+		char * token = strtok_r(line, " ", &saveptr1);
 		int label = atoi(token)-1;
 		trainLabel[i*numLabel + label] = 1.0;
-		if(saveptr[0]!='\n'){
-			while(token=strtok_r(NULL, " ", saveptr1)!=NULL){
+		if(saveptr1[0]!='\n'){
+			while((token=strtok_r(NULL, " ", &saveptr1))!=NULL){
 				int index;
 				double value;
 				sscanf(token, "%d:%lf", &index, &value);
@@ -229,7 +229,7 @@ void SVMDataset::loadData(const char* trainDataFileName, const char * validDataF
 	fclose(fp);
 
 
-	FILE *fp = fopen(validDataFileName, 'r');
+	fp = fopen(validDataFileName, "r");
 	fscanf(fp, "%d", &numValid);
 	fscanf(fp, "%d", &numFeature);
 	fscanf(fp, "%d", &numLabel);
@@ -238,18 +238,16 @@ void SVMDataset::loadData(const char* trainDataFileName, const char * validDataF
 	validData = new double[numValid*numFeature];
 	validLabel = new double[numValid*numLabel];
 	
-	memset(validData, 0, numValidn*numFeature*sizeof(double));
+	memset(validData, 0, numValid*numFeature*sizeof(double));
 	memset(validLabel, 0, numValid*numLabel*sizeof(double));
 
-	char *saveptr1;
-	char *saveptr2; 
 	for(int i=0; i<numValid; ++i){
 		fgets(line, 40000, fp);
-		char * token = strtok_r(line, " ", saveptr1);
+		char * token = strtok_r(line, " ", &saveptr1);
 		int label = atoi(token)-1;
 		validLabel[i*numLabel + label] = 1.0;
-		if(saveptr[0]!='\n'){
-			while(token=strtok_r(NULL, " ", saveptr1)!=NULL){
+		if(saveptr1[0]!='\n'){
+			while((token=strtok_r(NULL, " ", &saveptr1))!=NULL){
 				int index;
 				double value;
 				sscanf(token, "%d:%lf", &index, &value);
